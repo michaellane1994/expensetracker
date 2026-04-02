@@ -1096,14 +1096,18 @@ function doGet(e) {
             <p style="margin-bottom:12px;">Turn this HTML file into a live URL anyone can access — for free, using GitHub Pages. No coding experience needed.</p>
             <ol style="padding-left:18px;display:flex;flex-direction:column;gap:10px;">
               <li>Create a free account at <strong>github.com</strong> if you don't have one.</li>
-              <li>Click the <strong>+</strong> icon in the top right and select <strong>New repository</strong>.</li>
-              <li>Name it anything you like (e.g. <em>expenses</em>). Set it to <strong>Public</strong>. Leave everything else unchecked. Click <strong>Create repository</strong>.</li>
-              <li>On the next screen click <strong>uploading an existing file</strong>, drag your <code>index.html</code> file in, and click <strong>Commit changes</strong>.</li>
-              <li>The file must be named <code>index.html</code> — it already is, so no renaming needed.</li>
-              <li>Go to your repository <strong>Settings → Pages</strong>. Under Branch, select <strong>main</strong> and <strong>/ (root)</strong>, then click <strong>Save</strong>.</li>
-              <li>Wait about 30 seconds, then your app will be live at <strong>yourusername.github.io/expenses</strong>.</li>
+              <li>Click the <strong>+</strong> icon in the top right → <strong>New repository</strong>.</li>
+              <li>Name it anything (e.g. <em>expenses</em>). Set it to <strong>Public</strong>. Leave everything else unchecked. Click <strong>Create repository</strong>.</li>
+              <li>On the next screen click <strong>uploading an existing file</strong>, drag your <code>index.html</code> file in, and click <strong>Commit changes</strong>. The file must be named <code>index.html</code> — it already is.</li>
+              <li>Now enable GitHub Pages: click the <strong>Settings</strong> tab at the top of your repository page (not your account settings — the tab inside the repo itself).</li>
+              <li>In the left sidebar, click <strong>Pages</strong>.</li>
+              <li>Under <strong>Branch</strong>, open the dropdown that says "None" and select <strong>main</strong>. A second dropdown appears — leave it set to <strong>/ (root)</strong>. Click <strong>Save</strong>.</li>
+              <li>Wait about 30 seconds, then refresh the page. A box will appear saying <strong>"Your site is live at..."</strong> with your URL. Click it to open your app.</li>
             </ol>
-            <div style="margin-top:14px;padding:12px 16px;background:#eaf4ef;border-radius:var(--radius-sm);font-size:12.5px;color:#2d6a4f;line-height:1.6;">
+            <div style="margin-top:14px;padding:12px 16px;background:#f0f4ff;border-radius:var(--radius-sm);font-size:12.5px;color:#2a3a7a;line-height:1.7;">
+              <strong>Your URL</strong> follows the pattern <strong>yourusername.github.io/your-repo-name</strong> — e.g. if your GitHub username is john and your repo is named expenses, it will be <strong>john.github.io/expenses</strong>. Bookmark it once you have it. You can always find it again under <strong>Settings → Pages</strong>.
+            </div>
+            <div style="margin-top:10px;padding:12px 16px;background:#eaf4ef;border-radius:var(--radius-sm);font-size:12.5px;color:#2d6a4f;line-height:1.6;">
               <strong>To update your site:</strong> go to <strong>github.com</strong>, click your profile icon and select <strong>Repositories</strong>, click on your repository, then click <strong>Add file → Upload files</strong>, drag in your updated <code>index.html</code> file, and click <strong>Commit changes</strong>. Your site updates within 30 seconds.
             </div>
           </div>
