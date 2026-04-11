@@ -4672,6 +4672,7 @@ async function syncFromSheets() {
       if (data.settings?.commitExcludedCats) {
         commitExcludedCats = new Set(data.settings.commitExcludedCats);
         localStorage.setItem('lt_commit_excl', JSON.stringify([...commitExcludedCats]));
+        renderCommitExclusions();
       }
       repairIncomeDates();
       persist();
