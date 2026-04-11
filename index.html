@@ -1819,7 +1819,7 @@ let chartViewMode    = 'category'; // 'category' | 'fixed-variable'
 let cfBonusVisible   = true;
 let cfStartBalance   = parseFloat(localStorage.getItem('lt_cf_start') || '0');
 const _commitExclRaw = localStorage.getItem('lt_commit_excl');
-let commitExcludedCats = new Set(_commitExclRaw !== null ? JSON.parse(_commitExclRaw) : ['home','home-rental']);
+let commitExcludedCats = new Set(_commitExclRaw !== null ? JSON.parse(_commitExclRaw) : ['home']);
 let cfFromMonth      = localStorage.getItem('lt_cf_from')      || '';
 let cfToMonth        = localStorage.getItem('lt_cf_to')        || '';
 let cfAvgFrom        = localStorage.getItem('lt_cf_avg_from')  || '';
