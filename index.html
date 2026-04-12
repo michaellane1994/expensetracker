@@ -421,7 +421,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
     <div class="nav-label">Overview</div>
     <div class="nav-item active" onclick="goNav('dashboard')">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
+      Expense Tracker
     </div>
     <div class="nav-item" onclick="goNav('transactions')">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/></svg>
@@ -467,7 +467,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
       </button>
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-title" id="topbar-title">Expense Tracker</div>
       <div class="month-pills" id="month-pills"></div>
     </div>
     <div class="topbar-right">
@@ -505,7 +505,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         <div>
           <div style="font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px;">Welcome to Ledger 👋</div>
           <div style="font-size:13px;opacity:.85;line-height:1.6;max-width:480px;">
-            Start by uploading a CSV statement from your bank, or add a transaction manually. Head to <strong>Settings</strong> to customise your categories and connect Google Sheets for sync across devices.
+            Start by uploading a CSV or PDF statement from your bank, or add a transaction manually. Head to <strong>Settings</strong> to customise your categories and connect Google Sheets for sync across devices.
           </div>
         </div>
         <button class="btn" onclick="document.getElementById('welcome-banner').style.display='none';localStorage.setItem('lt_welcomed','1')" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);flex-shrink:0;white-space:nowrap;">Got it ✕</button>
@@ -514,7 +514,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         <div>
           <div class="hero-label">Total Spent</div>
           <div class="hero-total" id="hero-total">$0.00</div>
-          <div class="hero-sub" id="hero-sub">Import a CSV to get started</div>
+          <div class="hero-sub" id="hero-sub">Import a CSV or PDF to get started</div>
           <div id="hero-yoy" style="display:none;font-size:12px;margin-top:5px;"></div>
         </div>
         <div class="hero-stats">
@@ -1715,7 +1715,7 @@ function goNav(name) {
   const map = { dashboard: 0, transactions: 1, income: 2, savings: 3, upload: 4, trash: 5, settings: 6 };
   document.querySelectorAll('.nav-item')[map[name]].classList.add('active');
   document.getElementById('topbar-title').textContent =
-    { dashboard: 'Dashboard', transactions: 'Transactions', income: 'Income', savings: 'Savings', upload: 'Upload Data', trash: 'Bin', settings: 'Settings' }[name];
+    { dashboard: 'Expense Tracker', transactions: 'Transactions', income: 'Income', savings: 'Savings', upload: 'Upload Data', trash: 'Bin', settings: 'Settings' }[name];
   const periodBar = document.getElementById('dash-period-bar');
   const mainEl    = document.querySelector('.main');
   if (name === 'dashboard') {
@@ -4507,6 +4507,7 @@ function confirmAddCat() {
   saveCats();
   closeAddCat();
   renderCatManagement();
+  renderCommitExclusions();
   renderDashboard();
   autoPush();
 }
@@ -4526,6 +4527,7 @@ function deleteCat(key) {
   saveCats();
   persist();
   renderCatManagement();
+  renderCommitExclusions();
   renderDashboard();
   autoPush();
 }
