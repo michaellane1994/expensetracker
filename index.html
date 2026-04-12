@@ -2569,10 +2569,6 @@ function renderDashboard() {
 
   // Determine viewMonth for single-month periods
   const viewMonth = dashPeriod === 'latest' ? getMonths()[0] : (dashPeriod === '' ? selMonth : null);
-  // For year view, scope chart to that year
-  if (dashPeriod === 'year') {
-    filteredMonths = filteredMonths.filter(m => m.startsWith(selYear + '-'));
-  }
 
   // Build byCatPrev for trend indicators
   let prevExpenses = [];
