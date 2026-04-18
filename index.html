@@ -1803,6 +1803,7 @@ function merchantKey(m) {
 
 // ── NAV ──────────────────────────────────────────────────
 function goNav(name) {
+  localStorage.setItem('lt_last_page', name);
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
@@ -6148,7 +6149,9 @@ if (localStorage.getItem('lt_welcomed')) {
 }
 updateSyncDot(sheetsUrl ? 'ok' : 'off');
 setSyncLabel(sheetsUrl ? 'Connected' : 'Not connected');
-renderDashboard();
+const _validPages = ['dashboard','transactions','income','savings','mortgages','upload','trash','settings'];
+const _savedPage = localStorage.getItem('lt_last_page');
+goNav(_validPages.includes(_savedPage) ? _savedPage : 'dashboard');
 renderUploads();
 </script>
 </body>
