@@ -406,6 +406,84 @@ tbody tr:hover .row-menu-btn{opacity:1;}
   #pdf-raw-text{height:140px !important;}
   #pdf-step-2 > div[style*="max-height:280px"]{max-height:200px;}
 }
+.mort-hero{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px;}
+.mort-hero-label{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.mort-hero-value{font-family:'Playfair Display',serif;font-size:32px;}
+.mort-hero-stats{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-end;}
+.mort-hero-subvalue{font-size:18px;font-weight:600;margin-top:2px;}
+.mort-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:22px;}
+@media(max-width:900px){.mort-cards{grid-template-columns:1fr;}}
+.mort-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:18px 20px;cursor:pointer;transition:all .15s;position:relative;border-top-width:3px;}
+.mort-card:hover{box-shadow:var(--shadow);}
+.mort-card.selected{border-color:var(--accent);}
+.mort-card-label{font-size:11px;text-transform:uppercase;letter-spacing:.8px;font-weight:600;margin-bottom:2px;}
+.mort-card-property{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.mort-card-balance{font-family:'Playfair Display',serif;font-size:24px;margin-bottom:4px;}
+.mort-card-rate{font-size:12px;color:var(--muted);margin-bottom:12px;}
+.mort-card-footer{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-top:1px solid var(--border);padding-top:12px;}
+.mort-card-stat-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--faint);}
+.mort-card-stat-value{font-size:13px;font-weight:600;margin-top:2px;}
+.mort-term-badge{position:absolute;top:12px;right:12px;font-size:10px;background:#fef3e8;color:#c15c1e;border:1px solid #f5c07a;padding:2px 8px;border-radius:100px;font-weight:600;}
+[data-theme="dark"] .mort-term-badge{background:#2a1f08;border-color:#7c4e1a;color:#e8a060;}
+.mort-rate-type-badge{position:absolute;top:36px;right:12px;font-size:10px;padding:2px 8px;border-radius:100px;font-weight:600;}
+.mort-rate-type-badge.fixed{background:#e8f0fe;color:#2a4da8;border:1px solid #a8c0f0;}
+.mort-rate-type-badge.variable{background:#fef9e8;color:#9a6010;border:1px solid #f0d890;}
+[data-theme="dark"] .mort-rate-type-badge.fixed{background:#0d1a3a;border-color:#2a4da8;color:#7090e0;}
+[data-theme="dark"] .mort-rate-type-badge.variable{background:#2a1f08;border-color:#7c5010;color:#d4a850;}
+.mort-detail{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:18px;}
+.mort-detail-title{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:18px;}
+.mort-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+@media(max-width:1100px){.mort-stat-grid{grid-template-columns:repeat(2,1fr);}}
+.mort-stat-box{background:var(--bg);border-radius:var(--radius-sm);padding:12px 14px;}
+.mort-stat-box-label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.mort-stat-box-value{font-size:16px;font-weight:600;}
+.mort-stat-box-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+.mort-term-notice{display:flex;align-items:flex-start;gap:10px;background:#fef3e8;border:1px solid #f5c07a;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:20px;}
+[data-theme="dark"] .mort-term-notice{background:#2a1f08;border-color:#7c4e1a;}
+.mort-term-notice-text{font-size:13px;color:#7c3d12;line-height:1.5;}
+[data-theme="dark"] .mort-term-notice-text{color:#d4a870;}
+.mort-schedule{border-top:1px solid var(--border);padding-top:20px;margin-top:20px;}
+.mort-sched-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.mort-sched-title{font-size:14px;font-weight:600;}
+.mort-yr-row{cursor:pointer;}
+.mort-yr-row:hover td{background:var(--row-hover);}
+.mort-yr-row td{font-weight:500;}
+.mort-pmt-row td{font-size:12px;color:var(--muted);}
+.mort-pmt-row{display:none;}
+.mort-pmt-row.vis{display:table-row;}
+.mort-past-yr td{opacity:.5;}
+.mort-curr-yr td:first-child{color:var(--accent);}
+.mort-past-pmt td{opacity:.45;}
+.mort-extra-input{width:88px;padding:3px 6px;border:1px solid var(--border);border-radius:4px;font-size:11px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;text-align:right;}
+.mort-extra-input:focus{border-color:var(--accent);}
+.mort-vol-impact{display:flex;gap:14px;flex-wrap:wrap;background:#edf5f1;border:1px solid #a8d5be;border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:14px;}
+[data-theme="dark"] .mort-vol-impact{background:#071a10;border-color:#1a4030;}
+.mort-vol-impact-item{display:flex;flex-direction:column;gap:2px;min-width:80px;}
+.mort-vol-impact-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:600;}
+.mort-vol-impact-value{font-size:14px;font-weight:600;}
+.mort-vol-impact-item.positive .mort-vol-impact-value{color:#16a34a;}
+@media(max-width:700px){.mort-schedule .income-table{overflow-x:auto;}.mort-schedule table{min-width:580px;}.mort-extra-input{width:70px;}}
+.mort-card-add{background:transparent;border:2px dashed var(--border);border-radius:var(--radius);padding:18px 20px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;font-weight:500;min-height:160px;}
+.mort-card-add:hover{border-color:var(--accent);color:var(--accent);}
+.mort-edit-btn{position:absolute;top:10px;left:10px;background:none;border:none;cursor:pointer;color:var(--faint);padding:3px;opacity:0;transition:opacity .15s;display:flex;align-items:center;}
+.mort-card:hover .mort-edit-btn{opacity:1;}
+.mort-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;display:flex;align-items:center;justify-content:center;padding:16px;}
+.mort-modal{background:var(--surface);border-radius:var(--radius);padding:28px 28px 20px;width:min(560px,100%);max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.mort-modal-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.mort-modal-title-text{font-family:'Playfair Display',serif;font-size:18px;}
+.mort-modal-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1;padding:2px;}
+.mort-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:500px){.mort-form-grid{grid-template-columns:1fr;}}
+.mort-form-group{display:flex;flex-direction:column;gap:4px;}
+.mort-form-group.full{grid-column:span 2;}
+@media(max-width:500px){.mort-form-group.full{grid-column:1;}}
+.mort-form-label{font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;}
+.mort-form-input{padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;width:100%;}
+.mort-form-input:focus{border-color:var(--accent);}
+.mort-form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:14px;border-top:1px solid var(--border);}
+.mort-form-hint{font-size:11px;color:var(--faint);margin-top:3px;}
+.btn-danger{color:#dc2626 !important;}
+.btn-danger:hover{background:rgba(220,38,38,.1) !important;}
 </style>
 </head>
 <body>
@@ -434,6 +512,11 @@ tbody tr:hover .row-menu-btn{opacity:1;}
     <div class="nav-item" onclick="goNav('savings')">
       <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
       Savings
+    </div>
+    <div class="nav-label" style="margin-top:10px;">Loans</div>
+    <div class="nav-item" onclick="goNav('mortgages')">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Mortgages
     </div>
     <div class="nav-label" style="margin-top:10px;">Import</div>
     <div class="nav-item" onclick="goNav('upload')">
@@ -886,6 +969,11 @@ tbody tr:hover .row-menu-btn{opacity:1;}
           <p>Bin is empty</p>
         </div>
       </div>
+    </div>
+
+    <!-- MORTGAGES -->
+    <div class="view" id="view-mortgages">
+      <div id="mort-inner"></div>
     </div>
 
     <!-- SETTINGS -->
@@ -1688,6 +1776,8 @@ let incomes   = JSON.parse(localStorage.getItem('lt_incomes')  || '[]');
 let savAccts  = JSON.parse(localStorage.getItem('lt_savaccts') || '[]'); // savings accounts
 let contribs  = JSON.parse(localStorage.getItem('lt_contribs') || '[]'); // contribution log
 let sheetsUrl = localStorage.getItem('lt_sheets_url') || '';
+let mortBalances      = JSON.parse(localStorage.getItem('lt_mort_balances') || '{}');
+let mortVoluntaryPmts = JSON.parse(localStorage.getItem('lt_mort_voluntary') || '{}');
 let selMonth  = '';
 let selYear   = String(new Date().getFullYear());
 let dashPeriod    = ''; // '', 'latest', '3m', 'ytd', 'year'
@@ -1716,29 +1806,37 @@ function goNav(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
-  const map = { dashboard: 0, transactions: 1, income: 2, savings: 3, upload: 4, trash: 5, settings: 6 };
+  const map = { dashboard: 0, transactions: 1, income: 2, savings: 3, mortgages: 4, upload: 5, trash: 6, settings: 7 };
   document.querySelectorAll('.nav-item')[map[name]].classList.add('active');
   document.getElementById('topbar-title').textContent =
-    { dashboard: 'Dashboard', transactions: 'Transactions', income: 'Income', savings: 'Savings', upload: 'Upload Data', trash: 'Bin', settings: 'Settings' }[name];
-  const periodBar = document.getElementById('dash-period-bar');
-  const mainEl    = document.querySelector('.main');
-  if (name === 'dashboard') {
-    if (periodBar) periodBar.style.display = 'flex';
-    if (mainEl)    mainEl.classList.add('dash-bar-visible');
-    renderDashboard();
+    { dashboard: 'Dashboard', transactions: 'Transactions', income: 'Income', savings: 'Savings', mortgages: 'Mortgages', upload: 'Upload Data', trash: 'Bin', settings: 'Settings' }[name];
+  const periodBar    = document.getElementById('dash-period-bar');
+  const mainEl       = document.querySelector('.main');
+  const mobilePills  = document.getElementById('mobile-month-pills');
+  const desktopPills = document.getElementById('month-pills');
+  const showPills = ['dashboard', 'transactions', 'income', 'savings'].includes(name);
+  if (showPills) {
+    if (periodBar)    periodBar.style.display = 'flex';
+    if (desktopPills) desktopPills.style.display = '';
+    if (mobilePills)  mobilePills.style.display = '';
+    if (mainEl)       mainEl.classList.add('dash-bar-visible');
   } else {
-    if (periodBar) periodBar.style.display = 'none';
-    if (mainEl)    mainEl.classList.remove('dash-bar-visible');
+    if (periodBar)    periodBar.style.display = 'none';
+    if (mobilePills)  mobilePills.style.display = 'none';
+    if (desktopPills) desktopPills.style.display = 'none';
+    if (mainEl)       mainEl.classList.remove('dash-bar-visible');
   }
+  if (name === 'dashboard') renderDashboard();
   if (name === 'transactions') {
     if (selMonth) txnMonthFilter = new Set([selMonth]);
     renderTxns();
   }
-  if (name === 'upload')    renderUploads();
-  if (name === 'trash')     renderTrash();
-  if (name === 'income')    { renderIncome(); }
-  if (name === 'savings')   renderSavings();
-  if (name === 'settings')  renderSettings();
+  if (name === 'upload')     renderUploads();
+  if (name === 'trash')      renderTrash();
+  if (name === 'income')     { renderIncome(); }
+  if (name === 'savings')    renderSavings();
+  if (name === 'mortgages')  renderMortgages();
+  if (name === 'settings')   renderSettings();
 }
 
 // ── MONTH PILLS ──────────────────────────────────────────
@@ -4668,7 +4766,7 @@ async function syncToSheets() {
   try {
     const res = await fetchWithTimeout(sheetsUrl, {
       method: 'POST',
-      body: JSON.stringify({ action: 'push', txns, learned, incomes, savAccts, contribs, cats: CATS, uploads, trash, settings: { commitExcludedCats: [...commitExcludedCats] } }),
+      body: JSON.stringify({ action: 'push', txns, learned, incomes, savAccts, contribs, cats: CATS, uploads, trash, settings: { commitExcludedCats: [...commitExcludedCats], mortBalances, mortVoluntaryPmts, mortData } }),
     });
     const data = await res.json();
     if (data.ok) {
@@ -4724,6 +4822,18 @@ async function syncFromSheets() {
         commitExcludedCats = new Set(data.settings.commitExcludedCats);
         localStorage.setItem('lt_commit_excl', JSON.stringify([...commitExcludedCats]));
         renderCommitExclusions();
+      }
+      if (data.settings?.mortBalances) {
+        mortBalances = data.settings.mortBalances;
+        localStorage.setItem('lt_mort_balances', JSON.stringify(mortBalances));
+      }
+      if (data.settings?.mortVoluntaryPmts) {
+        mortVoluntaryPmts = data.settings.mortVoluntaryPmts;
+        localStorage.setItem('lt_mort_voluntary', JSON.stringify(mortVoluntaryPmts));
+      }
+      if (data.settings?.mortData) {
+        mortData = data.settings.mortData;
+        localStorage.setItem('lt_mort_data', JSON.stringify(mortData));
       }
       repairIncomeDates();
       persist();
@@ -4824,7 +4934,7 @@ async function autoPush() {
     try {
       const res = await fetchWithTimeout(sheetsUrl, {
         method: 'POST',
-        body: JSON.stringify({ action: 'push', txns, learned, incomes, savAccts, contribs, cats: CATS, uploads, trash, settings: { commitExcludedCats: [...commitExcludedCats] } }),
+        body: JSON.stringify({ action: 'push', txns, learned, incomes, savAccts, contribs, cats: CATS, uploads, trash, settings: { commitExcludedCats: [...commitExcludedCats], mortBalances, mortVoluntaryPmts, mortData } }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || 'Push failed');
@@ -5424,6 +5534,606 @@ function renderAppearance() {
   if (saved && THEMES[saved]) { applyTheme(saved); return; }
   applyTheme(localStorage.getItem('lt_darkMode') === 'true' ? 'dark-warm' : 'light');
 })();
+
+// ── MORTGAGES ────────────────────────────────────────────
+
+let mortData = JSON.parse(localStorage.getItem('lt_mort_data') || 'null') || [];
+function saveMortData() { localStorage.setItem('lt_mort_data', JSON.stringify(mortData)); }
+
+let selectedMortId = '';
+
+// ── MORTGAGE HOLIDAY HELPERS ──
+function _mortEaster(year) {
+  const a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  const d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m2 = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m2 + 114) / 31);
+  const day = ((h + l - 7 * m2 + 114) % 31) + 1;
+  return new Date(year, month - 1, day, 12, 0, 0);
+}
+const _mortHolidayCache = {};
+function _mortBankHolidays(year) {
+  if (_mortHolidayCache[year]) return _mortHolidayCache[year];
+  const s = new Set();
+  const ds = (y, mo, d) => new Date(y, mo, d, 12).toISOString().slice(0, 10);
+  s.add(ds(year, 0, 1));
+  const easter = _mortEaster(year);
+  s.add(new Date(easter.getFullYear(), easter.getMonth(), easter.getDate() - 2, 12).toISOString().slice(0, 10));
+  const may25dow = new Date(year, 4, 25).getDay();
+  s.add(ds(year, 4, 25 - (may25dow === 0 ? 6 : may25dow - 1)));
+  s.add(ds(year, 6, 1));
+  const sep1dow = new Date(year, 8, 1).getDay();
+  s.add(ds(year, 8, 1 + (sep1dow <= 1 ? 1 - sep1dow : 8 - sep1dow)));
+  const oct1dow = new Date(year, 9, 1).getDay();
+  const firstMonOct = 1 + (oct1dow <= 1 ? 1 - oct1dow : 8 - oct1dow);
+  s.add(ds(year, 9, firstMonOct + 7));
+  s.add(ds(year, 11, 25));
+  s.add(ds(year, 11, 26));
+  _mortHolidayCache[year] = s;
+  return s;
+}
+function mortNextBizDay(date) {
+  let d = new Date(date);
+  while (true) {
+    const dow = d.getDay();
+    if (dow !== 0 && dow !== 6 && !_mortBankHolidays(d.getFullYear()).has(d.toISOString().slice(0, 10))) break;
+    d.setDate(d.getDate() + 1);
+  }
+  return d;
+}
+
+function calcMort(balance, annualRate, paymentAmt, frequency, nextDateStr) {
+  const ppy = frequency === 'biweekly' ? 26 : 12;
+  const r = Math.pow(1 + annualRate / 2, 2 / ppy) - 1;
+  const schedule = [];
+  let bal = balance, totalInterest = 0, p = 0;
+  const base = new Date(nextDateStr + 'T12:00:00');
+  while (bal > 0.005 && p < 3000) {
+    const interest = bal * r;
+    const principal = Math.min(paymentAmt - interest, bal);
+    if (principal < 0.001) break;
+    bal = Math.max(bal - principal, 0);
+    totalInterest += interest;
+    const rawDate = new Date(base);
+    if (frequency === 'biweekly') rawDate.setDate(base.getDate() + p * 14);
+    else rawDate.setMonth(base.getMonth() + p);
+    const pmtDate = mortNextBizDay(rawDate);
+    p++;
+    schedule.push({ p, date: pmtDate, pmt: principal + interest, principal, interest, balance: bal });
+  }
+  return { schedule, totalInterest, periods: p, ppy };
+}
+
+function calcMortWithExtras(balance, annualRate, paymentAmt, frequency, firstDateStr, extras) {
+  const ppy = frequency === 'biweekly' ? 26 : 12;
+  const r = Math.pow(1 + annualRate / 2, 2 / ppy) - 1;
+  const extrasMap = {};
+  for (const e of (extras || [])) extrasMap[e.date] = (extrasMap[e.date] || 0) + e.amount;
+  const schedule = [];
+  let bal = balance, totalInterest = 0, p = 0;
+  const base = new Date(firstDateStr + 'T12:00:00');
+  while (bal > 0.005 && p < 3000) {
+    const rawDate = new Date(base);
+    if (frequency === 'biweekly') rawDate.setDate(base.getDate() + p * 14);
+    else rawDate.setMonth(base.getMonth() + p);
+    const pmtDate = mortNextBizDay(rawDate);
+    const dateStr = pmtDate.toISOString().slice(0, 10);
+    const interest = bal * r;
+    const principal = Math.min(paymentAmt - interest, bal);
+    if (principal < 0.001) break;
+    bal = Math.max(bal - principal, 0);
+    totalInterest += interest;
+    const extra = extrasMap[dateStr] || 0;
+    if (extra > 0 && bal > 0) bal = Math.max(bal - extra, 0);
+    p++;
+    schedule.push({ p, date: pmtDate, pmt: principal + interest, principal, interest, extra, balance: bal });
+    if (bal === 0) break;
+  }
+  return { schedule, totalInterest, periods: p, ppy };
+}
+
+function fmtMortDate(d) {
+  return d.toLocaleDateString('en-CA', { year: 'numeric', month: 'short' });
+}
+function fmtMortDateFull(d) {
+  return d instanceof Date ? d.toLocaleDateString('en-CA', { year: 'numeric', month: 'short', day: 'numeric' }) : d;
+}
+function fmtYrs(periods, ppy) {
+  const months = Math.round(periods / ppy * 12);
+  const y = Math.floor(months / 12), m = months % 12;
+  if (y === 0) return m + 'mo';
+  if (m === 0) return y + 'yr';
+  return y + 'yr ' + m + 'mo';
+}
+
+function getMortPaymentAfter(m, afterDate) {
+  const anchor = new Date(m.nextDate + 'T12:00:00');
+  if (m.frequency === 'biweekly') {
+    const daysDiff = Math.round((afterDate - anchor) / 86400000);
+    const k = Math.floor(daysDiff / 14) + 1;
+    const result = new Date(anchor);
+    result.setDate(anchor.getDate() + k * 14);
+    return result;
+  } else {
+    const result = new Date(anchor);
+    while (result > afterDate) result.setMonth(result.getMonth() - 1);
+    result.setMonth(result.getMonth() + 1);
+    return result;
+  }
+}
+
+function getNextMortPaymentAfter(m, afterDate) {
+  const base = new Date(m.nextDate + 'T12:00:00');
+  if (base > afterDate) return base;
+  if (m.frequency === 'biweekly') {
+    const daysDiff = Math.round((afterDate - base) / 86400000);
+    const k = Math.floor(daysDiff / 14) + 1;
+    const next = new Date(base);
+    next.setDate(base.getDate() + k * 14);
+    return next;
+  } else {
+    const next = new Date(base);
+    while (next <= afterDate) next.setMonth(next.getMonth() + 1);
+    return next;
+  }
+}
+
+function fmtBalInput(el) {
+  const n = parseFloat((el.value || '').replace(/,/g, ''));
+  if (!isNaN(n)) el.value = n.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function rawBalInput(el) { el.value = (el.value || '').replace(/,/g, ''); }
+function readBalInput(id) { return parseFloat((document.getElementById(id)?.value || '').replace(/,/g, '')) || 0; }
+
+function renderMortgages() {
+  const wrap = document.getElementById('mort-inner');
+  if (!wrap) return;
+  const today = new Date(); today.setHours(23, 59, 59, 0);
+
+  const stats = mortData.map(m => {
+    const extras = mortVoluntaryPmts[m.id] || [];
+    const ppy    = m.frequency === 'biweekly' ? 26 : 12;
+    const mStartDate   = new Date(m.startDate + 'T12:00:00');
+    const mFirstPmt    = getMortPaymentAfter(m, mStartDate);
+    const mFirstPmtStr = mFirstPmt.toISOString().slice(0, 10);
+    const inceptionRes = calcMortWithExtras(m.originalBalance, m.annualRate, m.payment, m.frequency, mFirstPmtStr, extras);
+
+    let liveBalance = m.originalBalance, lastPmtDate = null, interestPaid = 0, principalPaid = 0, pmtCount = 0;
+    for (const pmt of inceptionRes.schedule) {
+      if (pmt.date <= today) {
+        liveBalance = pmt.balance; lastPmtDate = pmt.date;
+        interestPaid += pmt.interest;
+        principalPaid += pmt.principal + (pmt.extra || 0);
+        pmtCount++;
+      } else break;
+    }
+
+    const saved = mortBalances[m.id];
+    if (saved) liveBalance = saved.balance;
+
+    const futureAnchor  = saved ? new Date(saved.asOf + 'T12:00:00') : today;
+    const nextFuturePmt = getNextMortPaymentAfter(m, futureAnchor);
+    const futureStartStr = nextFuturePmt.toISOString().slice(0, 10);
+    const futureExtras  = extras.filter(e => e.date >= futureStartStr);
+    const futureRes     = calcMortWithExtras(liveBalance, m.annualRate, m.payment, m.frequency, futureStartStr, futureExtras);
+
+    const payoffDate = futureRes.schedule.length ? futureRes.schedule[futureRes.schedule.length - 1].date : new Date();
+    const monthlyEq  = m.frequency === 'biweekly' ? m.payment * 26 / 12 : m.payment;
+
+    return { ...m, ppy, inceptionRes, schedule: futureRes.schedule, totalInterest: futureRes.totalInterest, periods: futureRes.periods,
+             balance: liveBalance, lastPmtDate, correctedAsOf: saved?.asOf || null, payoffDate, monthlyEq, interestPaid, principalPaid, pmtCount };
+  });
+
+  if (stats.length && !stats.find(m => m.id === selectedMortId)) selectedMortId = stats[0].id;
+  if (!stats.length) {
+    wrap.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);">No mortgages yet. <button class="btn btn-primary btn-sm" onclick="showMortForm(null)" style="margin-left:8px;">Add Mortgage</button></div>';
+    return;
+  }
+
+  const totalBalance  = stats.reduce((s, m) => s + m.balance, 0);
+  const totalMonthly  = stats.reduce((s, m) => s + m.monthlyEq, 0);
+  const totalInterest = stats.reduce((s, m) => s + m.totalInterest, 0);
+
+  const sel = stats.find(m => m.id === selectedMortId);
+  const mortExtras = mortVoluntaryPmts[sel.id] || [];
+  const fullRes    = sel.inceptionRes;
+
+  const corrSaved = mortBalances[sel.id];
+  let tableSchedule = fullRes.schedule;
+  if (corrSaved) {
+    const corrDate  = new Date(corrSaved.asOf + 'T12:00:00');
+    const pastPmts  = fullRes.schedule.filter(p => p.date <= corrDate);
+    const splicedPast = pastPmts.length > 0
+      ? [...pastPmts.slice(0, -1), { ...pastPmts[pastPmts.length - 1], balance: corrSaved.balance, corrected: true }]
+      : [];
+    const nextAfterCorr = getNextMortPaymentAfter(sel, corrDate);
+    const futStartStr   = nextAfterCorr.toISOString().slice(0, 10);
+    const futExtras     = mortExtras.filter(e => e.date >= futStartStr);
+    const corrFutRes    = calcMortWithExtras(corrSaved.balance, sel.annualRate, sel.payment, sel.frequency, futStartStr, futExtras);
+    tableSchedule = [...splicedPast, ...corrFutRes.schedule];
+  }
+
+  const mortExtrasMap = {};
+  for (const e of mortExtras) mortExtrasMap[e.date] = (mortExtrasMap[e.date] || 0) + e.amount;
+
+  const yearMap = {};
+  for (const pmt of tableSchedule) {
+    const yr = pmt.date.getFullYear();
+    if (!yearMap[yr]) yearMap[yr] = [];
+    yearMap[yr].push(pmt);
+  }
+  const yearGroups = Object.entries(yearMap).map(([yr, periods]) => ({
+    year:      parseInt(yr),
+    principal: periods.reduce((s, p) => s + p.principal, 0),
+    interest:  periods.reduce((s, p) => s + p.interest, 0),
+    payments:  periods.reduce((s, p) => s + p.pmt, 0),
+    extra:     periods.reduce((s, p) => s + (p.extra || 0), 0),
+    closing:   periods[periods.length - 1].balance,
+    startDate: periods[0].date,
+    endDate:   periods[periods.length - 1].date,
+    periods,
+    isPast:    periods[periods.length - 1].date <= today,
+    isCurrent: periods[0].date <= today && periods[periods.length - 1].date > today
+  }));
+
+  let impactHTML = '';
+  if (mortExtras.length > 0) {
+    const selFirstPmtStr2 = getMortPaymentAfter(sel, new Date(sel.startDate + 'T12:00:00')).toISOString().slice(0, 10);
+    const baseRes         = calcMort(sel.originalBalance, sel.annualRate, sel.payment, sel.frequency, selFirstPmtStr2);
+    const totalVoluntary  = mortExtras.reduce((s, e) => s + e.amount, 0);
+    const interestSaved   = baseRes.totalInterest - fullRes.totalInterest;
+    const pmtsSaved       = baseRes.periods - fullRes.periods;
+    const basePayoff      = baseRes.schedule.length ? baseRes.schedule[baseRes.schedule.length - 1].date : sel.payoffDate;
+    const newPayoff       = fullRes.schedule.length ? fullRes.schedule[fullRes.schedule.length - 1].date : sel.payoffDate;
+    impactHTML = `<div class="mort-vol-impact">
+      <div class="mort-vol-impact-item"><div class="mort-vol-impact-label">Extra Paid</div><div class="mort-vol-impact-value">${fmt(totalVoluntary)}</div></div>
+      <div class="mort-vol-impact-item positive"><div class="mort-vol-impact-label">Interest Saved</div><div class="mort-vol-impact-value">${fmt(interestSaved)}</div></div>
+      <div class="mort-vol-impact-item positive"><div class="mort-vol-impact-label">Payments Saved</div><div class="mort-vol-impact-value">${pmtsSaved}</div></div>
+      <div class="mort-vol-impact-item positive"><div class="mort-vol-impact-label">Adjusted Payoff</div><div class="mort-vol-impact-value">${fmtMortDate(newPayoff)}</div><div style="font-size:11px;color:var(--muted);margin-top:2px;">was ${fmtMortDate(basePayoff)}</div></div>
+    </div>`;
+  }
+
+  const termEnd    = new Date(sel.termEnd + 'T12:00:00');
+  const daysToTerm = Math.round((termEnd - new Date()) / 86400000);
+  const termNotice = daysToTerm < 548 ? `
+    <div class="mort-term-notice">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="15" height="15" style="flex-shrink:0;margin-top:1px;color:#c15c1e;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+      <div class="mort-term-notice-text">The <strong>${sel.label}</strong> term expires <strong>${fmtMortDateFull(termEnd)}</strong> (${daysToTerm} days). Plan to renew or refinance at the prevailing rate.</div>
+    </div>` : '';
+
+  const rateTypeBadge = (m) => {
+    const rt = m.rateType || 'fixed';
+    return `<span class="mort-rate-type-badge ${rt}">${rt === 'variable' ? 'Variable' : 'Fixed'}</span>`;
+  };
+
+  wrap.innerHTML = `
+    <div class="mort-hero">
+      <div>
+        <div class="mort-hero-label">Total Outstanding Debt</div>
+        <div class="mort-hero-value">${fmt(totalBalance)}</div>
+      </div>
+      <div class="mort-hero-stats">
+        <div>
+          <div class="mort-hero-label">Monthly Payments</div>
+          <div class="mort-hero-subvalue">${fmt(totalMonthly)}/mo</div>
+        </div>
+        <div>
+          <div class="mort-hero-label">Total Interest Remaining</div>
+          <div class="mort-hero-subvalue">${fmt(totalInterest)}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mort-cards">
+      ${stats.map(m => `
+        <div class="mort-card${m.id === selectedMortId ? ' selected' : ''}" onclick="selectMort('${m.id}')" style="border-top-color:${m.color};">
+          <button class="mort-edit-btn" onclick="event.stopPropagation();showMortForm('${m.id}')" title="Edit mortgage">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <span class="mort-term-badge">Term to ${m.termEnd.substring(0, 7)}</span>
+          ${rateTypeBadge(m)}
+          <div class="mort-card-label" style="color:${m.color};">${m.label}</div>
+          <div class="mort-card-property">${m.property}</div>
+          <div class="mort-card-balance">${fmt(m.balance)}</div>
+          <div class="mort-card-rate">${(m.annualRate * 100).toFixed(2)}% &middot; ${m.frequency === 'biweekly' ? 'Biweekly' : 'Monthly'}</div>
+          <div class="mort-card-footer">
+            <div><div class="mort-card-stat-label">Payment</div><div class="mort-card-stat-value">${fmt(m.payment)}</div></div>
+            <div><div class="mort-card-stat-label">Payoff</div><div class="mort-card-stat-value">${fmtMortDate(m.payoffDate)}</div></div>
+            <div><div class="mort-card-stat-label">Total Interest</div><div class="mort-card-stat-value">${fmt(m.totalInterest)}</div></div>
+            <div><div class="mort-card-stat-label">Remaining</div><div class="mort-card-stat-value">${fmtYrs(m.periods, m.ppy)}</div></div>
+          </div>
+        </div>`).join('')}
+      <div class="mort-card-add" onclick="showMortForm(null)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Add Mortgage
+      </div>
+    </div>
+
+    <div class="mort-detail">
+      <div class="mort-detail-title">${sel.label} &mdash; ${sel.property}</div>
+
+      <div class="mort-stat-grid">
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Outstanding Balance</div>
+          <div class="mort-stat-box-value">${fmt(sel.balance)}</div>
+          <div class="mort-stat-box-sub">${sel.lastPmtDate ? 'after pmt ' + fmtMortDateFull(sel.lastPmtDate) : sel.correctedAsOf ? 'corrected ' + sel.correctedAsOf : 'no payments yet'}</div>
+          <details style="margin-top:8px;">
+            <summary style="font-size:11px;color:var(--accent);cursor:pointer;user-select:none;">Correct balance</summary>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:6px;">
+              <input type="text" id="mort-bal-input" style="width:140px;padding:5px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:12px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;" placeholder="${fmt(sel.balance).replace('$', '')}" onfocus="rawBalInput(this)" onblur="fmtBalInput(this)">
+              <button class="btn btn-primary btn-sm" style="font-size:11px;padding:5px 10px;" onclick="saveMortBalance('${sel.id}')">Save</button>
+            </div>
+          </details>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Interest Rate</div>
+          <div class="mort-stat-box-value">${(sel.annualRate * 100).toFixed(2)}%</div>
+          <div class="mort-stat-box-sub">${(sel.rateType || 'fixed') === 'variable' ? 'Variable rate' : 'Fixed rate'} &middot; Semi-annual compounding</div>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Payment</div>
+          <div class="mort-stat-box-value">${fmt(sel.payment)}</div>
+          <div class="mort-stat-box-sub">${sel.frequency === 'biweekly' ? 'Every 2 weeks (26/yr)' : 'Monthly (12/yr)'}</div>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Monthly Equivalent</div>
+          <div class="mort-stat-box-value">${fmt(sel.monthlyEq)}/mo</div>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Paid to Date</div>
+          <div class="mort-stat-box-value">${fmt(sel.interestPaid + sel.principalPaid)}</div>
+          <div class="mort-stat-box-sub">Interest: ${fmt(sel.interestPaid)}</div>
+          <div class="mort-stat-box-sub">Principal: ${fmt(sel.principalPaid)}</div>
+          <div class="mort-stat-box-sub">${sel.pmtCount} pmts since ${sel.startDate}</div>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Interest Remaining</div>
+          <div class="mort-stat-box-value">${fmt(sel.totalInterest)}</div>
+          <div class="mort-stat-box-sub">Lifetime total: ${fmt(sel.interestPaid + sel.totalInterest)}</div>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Payoff Date</div>
+          <div class="mort-stat-box-value">${fmtMortDate(sel.payoffDate)}</div>
+          <div class="mort-stat-box-sub">${fmtYrs(sel.periods, sel.ppy)} remaining</div>
+        </div>
+        <div class="mort-stat-box">
+          <div class="mort-stat-box-label">Term Expires</div>
+          <div class="mort-stat-box-value">${fmtMortDateFull(termEnd)}</div>
+          <div class="mort-stat-box-sub">${daysToTerm > 0 ? daysToTerm + ' days away' : 'Expired'}</div>
+        </div>
+      </div>
+
+      ${termNotice}
+
+      <div class="mort-schedule">
+        <div class="mort-sched-head">
+          <div class="mort-sched-title">Amortization Schedule</div>
+          <div style="font-size:12px;color:var(--muted);">From inception &middot; click a year to expand &middot; enter extra payments in expanded rows</div>
+        </div>
+        ${impactHTML}
+        <div class="income-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Period</th>
+                <th style="text-align:right;">Total Paid</th>
+                <th style="text-align:right;">Principal</th>
+                <th style="text-align:right;">Interest</th>
+                <th style="text-align:right;">Closing Balance</th>
+                <th style="text-align:right;">Extra Payment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:var(--bg);">
+                <td colspan="2" style="font-size:12px;color:var(--muted);font-style:italic;">Opening Balance &mdash; ${sel.startDate}</td>
+                <td colspan="4" style="text-align:right;">
+                  <input type="text" id="mort-opening-bal"
+                    style="font-weight:600;font-size:13px;text-align:right;border:none;border-bottom:1px dashed var(--faint);background:transparent;color:var(--ink);font-family:'Inter',sans-serif;width:130px;cursor:text;outline:none;"
+                    value="${sel.originalBalance.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}"
+                    title="Click to edit opening balance"
+                    onfocus="rawBalInput(this);this.style.borderBottomColor='var(--accent)';"
+                    onblur="saveOpeningBalance('${sel.id}',this.value);fmtBalInput(this);this.style.borderBottomColor='var(--faint)';">
+                </td>
+                <td></td>
+              </tr>
+              ${yearGroups.map((yg, yi) => `
+                <tr class="mort-yr-row${yg.isPast ? ' mort-past-yr' : yg.isCurrent ? ' mort-curr-yr' : ''}" onclick="toggleMortYear(${yi})">
+                  <td><strong>${yg.year}</strong></td>
+                  <td style="font-size:12px;color:var(--muted);">${fmtMortDate(yg.startDate)} &ndash; ${fmtMortDate(yg.endDate)}</td>
+                  <td style="text-align:right;">${fmt(yg.payments + yg.extra)}</td>
+                  <td style="text-align:right;">${fmt(yg.principal + yg.extra)}</td>
+                  <td style="text-align:right;color:var(--muted);">${fmt(yg.interest)}</td>
+                  <td style="text-align:right;font-weight:600;">${fmt(yg.closing)}</td>
+                  <td style="text-align:right;color:#16a34a;">${yg.extra > 0 ? fmt(yg.extra) : ''}</td>
+                </tr>
+                ${yg.periods.map((p, pi) => {
+                  const dStr = p.date.toISOString().slice(0, 10);
+                  const eVal = mortExtrasMap[dStr] || 0;
+                  const isPast = p.date <= today;
+                  return `<tr class="mort-pmt-row${isPast ? ' mort-past-pmt' : ''}" id="mp-${yi}-${pi}">
+                    <td style="padding-left:22px;color:var(--faint);">Pmt ${p.p}</td>
+                    <td style="font-size:12px;color:var(--muted);">${fmtMortDateFull(p.date)}</td>
+                    <td style="text-align:right;">${fmt(p.pmt)}</td>
+                    <td style="text-align:right;">${fmt(p.principal)}</td>
+                    <td style="text-align:right;color:var(--muted);">${fmt(p.interest)}</td>
+                    <td style="text-align:right;${p.corrected ? 'color:var(--accent);font-weight:600;' : ''}">${fmt(p.balance)}${p.corrected ? '<span style="font-size:9px;vertical-align:super;margin-left:2px;opacity:.7;">adj</span>' : ''}</td>
+                    <td style="text-align:right;">
+                      <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;">
+                        <input type="text" class="mort-extra-input" value="${eVal > 0 ? eVal.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}" placeholder="0.00" onfocus="rawBalInput(this)" onblur="saveMortVoluntary('${sel.id}','${dStr}',this.value);fmtBalInput(this);">
+                        ${eVal > 0 ? `<button onclick="saveMortVoluntary('${sel.id}','${dStr}','0')" style="background:none;border:none;color:var(--faint);cursor:pointer;padding:2px 3px;font-size:12px;line-height:1;flex-shrink:0;" title="Remove">&#x2715;</button>` : '<span style="width:18px;flex-shrink:0;"></span>'}
+                      </div>
+                    </td>
+                  </tr>`;
+                }).join('')}
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function saveOpeningBalance(mortId, rawVal) {
+  const amount = parseFloat((rawVal || '').replace(/,/g, '')) || 0;
+  if (amount <= 0) return;
+  const idx = mortData.findIndex(m => m.id === mortId);
+  if (idx < 0 || mortData[idx].originalBalance === amount) return;
+  mortData[idx] = { ...mortData[idx], originalBalance: amount };
+  saveMortData(); renderMortgages(); autoPush();
+}
+
+function saveMortBalance(id) {
+  const val = readBalInput('mort-bal-input');
+  if (!val || val <= 0) { alert('Please enter a valid balance.'); return; }
+  const today = new Date().toISOString().slice(0, 10);
+  mortBalances[id] = { balance: val, asOf: today };
+  localStorage.setItem('lt_mort_balances', JSON.stringify(mortBalances));
+  renderMortgages(); autoPush();
+}
+
+function saveMortVoluntary(mortId, dateStr, rawVal) {
+  const amount = parseFloat((rawVal || '').replace(/,/g, '')) || 0;
+  const list = mortVoluntaryPmts[mortId] ? [...mortVoluntaryPmts[mortId]] : [];
+  const idx = list.findIndex(e => e.date === dateStr);
+  if (amount > 0) {
+    if (idx >= 0) { if (list[idx].amount === amount) return; list[idx] = { date: dateStr, amount }; }
+    else list.push({ date: dateStr, amount });
+  } else {
+    if (idx < 0) return; list.splice(idx, 1);
+  }
+  list.sort((a, b) => a.date < b.date ? -1 : 1);
+  mortVoluntaryPmts[mortId] = list;
+  localStorage.setItem('lt_mort_voluntary', JSON.stringify(mortVoluntaryPmts));
+  renderMortgages(); autoPush();
+}
+
+function selectMort(id) { selectedMortId = id; renderMortgages(); }
+
+let _mortEditId = null;
+
+function showMortForm(id) {
+  _mortEditId = id;
+  const m = id ? mortData.find(x => x.id === id) : null;
+  const existing = document.getElementById('mort-form-modal');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'mort-form-modal';
+  overlay.className = 'mort-modal-overlay';
+  overlay.onclick = () => closeMortForm();
+  overlay.innerHTML = `
+    <div class="mort-modal" onclick="event.stopPropagation()">
+      <div class="mort-modal-title">
+        <span class="mort-modal-title-text">${m ? 'Edit Mortgage' : 'Add Mortgage'}</span>
+        <button class="mort-modal-close" onclick="closeMortForm()">&#x2715;</button>
+      </div>
+      <div class="mort-form-grid">
+        <div class="mort-form-group">
+          <div class="mort-form-label">Mortgage Name</div>
+          <input class="mort-form-input" id="mf-label" value="${m?.label || ''}" placeholder="e.g. Primary">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Property</div>
+          <input class="mort-form-input" id="mf-property" value="${m?.property || ''}" placeholder="e.g. Personal Home">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Original Balance ($)</div>
+          <input class="mort-form-input" id="mf-orig-bal" value="${m ? m.originalBalance.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}" placeholder="e.g. 500,000.00" onfocus="rawBalInput(this)" onblur="fmtBalInput(this)">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Annual Rate (%)</div>
+          <input class="mort-form-input" id="mf-rate" type="number" step="0.001" min="0" max="30" value="${m ? (m.annualRate * 100).toFixed(3) : ''}" placeholder="e.g. 4.190">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Rate Type</div>
+          <select class="mort-form-input" id="mf-rate-type">
+            <option value="fixed" ${!m || (m.rateType || 'fixed') === 'fixed' ? 'selected' : ''}>Fixed</option>
+            <option value="variable" ${m?.rateType === 'variable' ? 'selected' : ''}>Variable</option>
+          </select>
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Regular Payment ($)</div>
+          <input class="mort-form-input" id="mf-payment" value="${m ? m.payment.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''}" placeholder="e.g. 1,347.92" onfocus="rawBalInput(this)" onblur="fmtBalInput(this)">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Frequency</div>
+          <select class="mort-form-input" id="mf-freq">
+            <option value="biweekly" ${!m || m.frequency === 'biweekly' ? 'selected' : ''}>Biweekly (every 2 weeks)</option>
+            <option value="monthly" ${m?.frequency === 'monthly' ? 'selected' : ''}>Monthly</option>
+          </select>
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Start Date (inception)</div>
+          <input class="mort-form-input" id="mf-start" type="date" value="${m?.startDate || ''}">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Next Payment Date</div>
+          <input class="mort-form-input" id="mf-next" type="date" value="${m?.nextDate || ''}">
+          <div class="mort-form-hint">Any upcoming scheduled payment date</div>
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Term End Date</div>
+          <input class="mort-form-input" id="mf-term" type="date" value="${m?.termEnd || ''}">
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Colour</div>
+          <input class="mort-form-input" id="mf-color" type="color" value="${m?.color || '#3050a8'}" style="height:39px;padding:3px 6px;cursor:pointer;">
+        </div>
+      </div>
+      <div class="mort-form-actions">
+        ${m ? `<button class="btn btn-ghost btn-sm btn-danger" onclick="deleteMortgage('${m.id}')">Delete</button>` : ''}
+        <button class="btn btn-ghost btn-sm" onclick="closeMortForm()">Cancel</button>
+        <button class="btn btn-primary btn-sm" onclick="submitMortForm()">Save</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function closeMortForm() { const el = document.getElementById('mort-form-modal'); if (el) el.remove(); }
+
+function submitMortForm() {
+  const label     = document.getElementById('mf-label').value.trim();
+  const property  = document.getElementById('mf-property').value.trim();
+  const origBal   = parseFloat((document.getElementById('mf-orig-bal').value || '').replace(/,/g, '')) || 0;
+  const rateRaw   = parseFloat(document.getElementById('mf-rate').value) || 0;
+  const rateType  = document.getElementById('mf-rate-type').value;
+  const payment   = parseFloat((document.getElementById('mf-payment').value || '').replace(/,/g, '')) || 0;
+  const freq      = document.getElementById('mf-freq').value;
+  const startDate = document.getElementById('mf-start').value;
+  const nextDate  = document.getElementById('mf-next').value;
+  const termEnd   = document.getElementById('mf-term').value;
+  const color     = document.getElementById('mf-color').value;
+  if (!label || !origBal || !rateRaw || !payment || !startDate || !nextDate || !termEnd) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+  const annualRate = rateRaw / 100;
+  if (_mortEditId) {
+    const idx = mortData.findIndex(m => m.id === _mortEditId);
+    if (idx >= 0) mortData[idx] = { ...mortData[idx], label, property, originalBalance: origBal, annualRate, rateType, payment, frequency: freq, startDate, nextDate, termEnd, color };
+  } else {
+    const id = 'mort_' + Date.now();
+    mortData.push({ id, label, property, originalBalance: origBal, annualRate, rateType, payment, frequency: freq, startDate, nextDate, termEnd, color });
+    selectedMortId = id;
+  }
+  saveMortData(); closeMortForm(); renderMortgages(); autoPush();
+}
+
+function deleteMortgage(id) {
+  if (!confirm('Delete this mortgage? This cannot be undone.')) return;
+  mortData = mortData.filter(m => m.id !== id);
+  if (selectedMortId === id) selectedMortId = mortData[0]?.id || '';
+  saveMortData(); closeMortForm(); renderMortgages(); autoPush();
+}
+
+function toggleMortYear(yi) {
+  const rows = document.querySelectorAll(`[id^="mp-${yi}-"]`);
+  const isOpen = rows.length && rows[0].classList.contains('vis');
+  rows.forEach(r => r.classList.toggle('vis', !isOpen));
+}
 
 // ── INIT ─────────────────────────────────────────────────
 repairIncomeDates(); // fix any stored incomes missing dates before first render
