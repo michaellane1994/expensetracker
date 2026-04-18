@@ -584,14 +584,17 @@ tbody tr:hover .row-menu-btn{opacity:1;}
 
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
-      <div id="welcome-banner" style="background:linear-gradient(135deg,#1d4e89,#2d6a4f);border-radius:var(--radius);padding:24px 28px;margin-bottom:18px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;">
-        <div>
+      <div id="welcome-banner" style="background:linear-gradient(135deg,#1d4e89,#2d6a4f);border-radius:var(--radius);padding:24px 28px;margin-bottom:18px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:260px;">
           <div style="font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px;">Welcome to Expense Tracker 👋</div>
-          <div style="font-size:13px;opacity:.85;line-height:1.6;max-width:480px;">
-            Start by uploading a CSV or PDF statement from your bank, or add a transaction manually. Head to <strong>Settings</strong> to customise your categories and connect Google Sheets for sync across devices.
+          <div style="font-size:13px;opacity:.85;line-height:1.6;max-width:520px;">
+            New here? Click <strong>Load sample data</strong> to explore with a pre-filled dataset. Or start fresh by uploading a CSV/PDF or adding a transaction manually. Head to <strong>Settings</strong> to customise categories and connect Google Sheets for sync across devices.
           </div>
         </div>
-        <button class="btn" onclick="document.getElementById('welcome-banner').style.display='none';localStorage.setItem('lt_welcomed','1')" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);flex-shrink:0;white-space:nowrap;">Got it ✕</button>
+        <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;">
+          <button class="btn" onclick="loadSampleData()" style="background:rgba(255,255,255,.92);color:#1d4e89;border:1px solid rgba(255,255,255,.3);white-space:nowrap;font-weight:600;">Load sample data</button>
+          <button class="btn" onclick="document.getElementById('welcome-banner').style.display='none';localStorage.setItem('lt_welcomed','1')" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Got it ✕</button>
+        </div>
       </div>
       <div class="month-hero">
         <div>
@@ -1096,6 +1099,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
           <div style="display:flex;gap:10px;flex-wrap:wrap;">
             <button class="btn btn-primary" onclick="syncToSheets()">↑ Push to Google Sheets</button>
             <button class="btn btn-ghost" onclick="syncFromSheets()">↓ Pull from Google Sheets</button>
+            <button class="btn btn-ghost" onclick="loadSampleData()">✨ Load sample data</button>
             <button class="btn btn-ghost btn-danger" onclick="clearLocalData()">✕ Clear local data</button>
           </div>
           <div style="margin-top:10px;">
@@ -1107,6 +1111,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
           <p style="font-size:12px;color:var(--faint);margin-top:10px;line-height:1.6;">
             <strong>Push</strong> sends all local data to the sheet — always do this after making changes.<br>
             <strong>Pull</strong> replaces all local data with what is in the sheet — use when switching devices.<br>
+            <strong>Load sample data</strong> replaces local data with a pre-filled demo dataset so you can explore the app.<br>
             <strong>Clear local data</strong> wipes this device only — your sheet data is unaffected.<br>
             <strong>Repair</strong> scans transactions flagged as income and creates any missing Income tab entries.
           </p>
@@ -4854,13 +4859,201 @@ async function syncFromSheets() {
 }
 
 function clearLocalData() {
-  if (!confirm('This will wipe all local data from this device. Your Google Sheet data is unaffected. Use Pull to reload it. Continue?')) return;
-  txns = []; uploads = []; incomes = []; savAccts = []; contribs = []; learned = {}; trash = [];
-  persist();
+  if (!confirm('This will wipe all local data from this device (transactions, incomes, savings, mortgages). Your Google Sheet data is unaffected. Use Pull to reload it. Continue?')) return;
+  _wipeAllLocalState();
+  persist(); saveMortData();
+  localStorage.setItem('lt_mort_balances', JSON.stringify(mortBalances));
+  localStorage.setItem('lt_mort_voluntary', JSON.stringify(mortVoluntaryPmts));
   renderPills();
   renderDashboard();
   renderUploads();
+  if (typeof renderTxns === 'function') renderTxns();
+  if (typeof renderIncome === 'function') renderIncome();
+  if (typeof renderSavings === 'function') renderSavings();
+  if (typeof renderMortgages === 'function') renderMortgages();
   showConnStatus('Local data cleared. Hit Pull to reload from Google Sheets.', 'ok');
+}
+
+function _wipeAllLocalState() {
+  txns = []; uploads = []; incomes = []; savAccts = []; contribs = [];
+  learned = {}; trash = [];
+  mortData = []; mortBalances = {}; mortVoluntaryPmts = {};
+  selectedMortId = '';
+}
+
+function loadSampleData() {
+  if (!confirm('This replaces all current local data with a sample dataset so you can explore the app. Your Google Sheet data is unaffected. Continue?')) return;
+
+  _wipeAllLocalState();
+
+  const todayISO = new Date().toISOString().slice(0, 10);
+  const daysAgo = (n) => { const d = new Date(); d.setDate(d.getDate() - n); return d.toISOString().slice(0, 10); };
+
+  const P1 = (people[0] && people[0].name) || 'Person 1';
+  const P2 = (people[1] && people[1].name) || 'Person 2';
+
+  const sampleTxns = [
+    // Last ~7 days
+    { d: 1,  m: 'Whole Foods Market',     a: 142.30, c: 'groceries',     p: P1 },
+    { d: 2,  m: 'Starbucks',              a: 8.45,   c: 'eatingout',     p: P2 },
+    { d: 3,  m: 'Shell Gas Station',      a: 68.20,  c: 'transport',     p: P1 },
+    { d: 4,  m: 'Netflix Subscription',   a: 18.99,  c: 'bills',         p: P1 },
+    { d: 5,  m: 'Amazon.ca',              a: 47.80,  c: 'shopping',      p: P2 },
+    { d: 6,  m: 'Pharmacy Plus',          a: 32.40,  c: 'health',        p: P1 },
+    { d: 7,  m: 'Indian Bistro',          a: 78.50,  c: 'eatingout',     p: P2 },
+    // 8-14 days ago
+    { d: 8,  m: 'Costco Wholesale',       a: 312.85, c: 'groceries',     p: P1 },
+    { d: 9,  m: 'Cineplex Odeon',         a: 36.00,  c: 'entertainment', p: P2 },
+    { d: 10, m: 'Uber',                   a: 24.15,  c: 'transport',     p: P1 },
+    { d: 11, m: 'Spotify Premium',        a: 10.99,  c: 'bills',         p: P2 },
+    { d: 12, m: 'Nike Store',             a: 129.00, c: 'shopping',      p: P1 },
+    { d: 13, m: 'Local Cafe',             a: 12.80,  c: 'eatingout',     p: P1 },
+    { d: 14, m: 'City Transit Pass',      a: 128.00, c: 'transport',     p: P2 },
+    // 15-30 days ago
+    { d: 16, m: 'Metro Supermarket',      a: 98.40,  c: 'groceries',     p: P2 },
+    { d: 17, m: 'Boston Pizza',           a: 62.10,  c: 'eatingout',     p: P1 },
+    { d: 18, m: 'Electric Utility',       a: 134.55, c: 'bills',         p: P1 },
+    { d: 19, m: 'Home Depot',             a: 89.20,  c: 'shopping',      p: P2 },
+    { d: 20, m: 'Dental Clinic',          a: 210.00, c: 'health',        p: P1 },
+    { d: 21, m: 'Sushi Ichiban',          a: 54.30,  c: 'eatingout',     p: P2 },
+    { d: 22, m: 'Shoppers Drug Mart',     a: 28.75,  c: 'health',        p: P1 },
+    { d: 23, m: 'Sobeys',                 a: 118.90, c: 'groceries',     p: P1 },
+    { d: 24, m: 'Internet Provider',      a: 89.99,  c: 'bills',         p: P1 },
+    { d: 25, m: 'Petro-Canada',           a: 72.50,  c: 'transport',     p: P2 },
+    { d: 26, m: 'Ikea',                   a: 245.80, c: 'shopping',      p: P2 },
+    { d: 27, m: 'Thai Garden',            a: 45.60,  c: 'eatingout',     p: P1 },
+    { d: 28, m: 'GoodLife Fitness',       a: 54.99,  c: 'health',        p: P2 },
+    { d: 29, m: 'Amazon.ca',              a: 38.45,  c: 'shopping',      p: P1 },
+    { d: 30, m: 'Concert Tickets',        a: 180.00, c: 'entertainment', p: P2 },
+    // 31-60 days ago
+    { d: 32, m: 'Loblaws',                a: 156.20, c: 'groceries',     p: P2 },
+    { d: 34, m: 'The Keg Steakhouse',     a: 142.00, c: 'eatingout',     p: P1 },
+    { d: 35, m: 'Mobile Phone Bill',      a: 72.00,  c: 'bills',         p: P1 },
+    { d: 36, m: 'Parking Garage',         a: 22.00,  c: 'transport',     p: P2 },
+    { d: 38, m: 'Best Buy',               a: 389.99, c: 'shopping',      p: P1 },
+    { d: 40, m: 'Second Cup',             a: 9.20,   c: 'eatingout',     p: P2 },
+    { d: 42, m: 'Costco Wholesale',       a: 298.15, c: 'groceries',     p: P1 },
+    { d: 44, m: 'Indigo Books',           a: 48.60,  c: 'shopping',      p: P2 },
+    { d: 46, m: 'Physio Clinic',          a: 95.00,  c: 'health',        p: P1 },
+    { d: 48, m: 'Esso Gas Station',       a: 65.40,  c: 'transport',     p: P2 },
+    { d: 50, m: 'Ramen House',            a: 38.80,  c: 'eatingout',     p: P1 },
+    { d: 52, m: 'Water Utility',          a: 58.30,  c: 'bills',         p: P2 },
+    { d: 54, m: 'Museum of Fine Arts',    a: 42.00,  c: 'entertainment', p: P1 },
+    { d: 56, m: 'No Frills',              a: 87.50,  c: 'groceries',     p: P2 },
+    { d: 58, m: 'Lululemon',              a: 148.00, c: 'shopping',      p: P1 },
+    { d: 59, m: 'Uber Eats',              a: 32.20,  c: 'eatingout',     p: P2 },
+    // 60-90 days ago
+    { d: 62, m: 'Whole Foods Market',     a: 127.90, c: 'groceries',     p: P1 },
+    { d: 64, m: 'Netflix Subscription',   a: 18.99,  c: 'bills',         p: P1 },
+    { d: 65, m: 'Air Canada',             a: 485.00, c: 'travel',        p: P2 },
+    { d: 67, m: 'Marriott Hotel',         a: 312.00, c: 'travel',        p: P2 },
+    { d: 69, m: 'The Old Spaghetti Factory', a: 58.40, c: 'eatingout',   p: P1 },
+    { d: 71, m: 'Shell Gas Station',      a: 71.10,  c: 'transport',     p: P1 },
+    { d: 73, m: 'Amazon.ca',              a: 64.85,  c: 'shopping',      p: P2 },
+    { d: 75, m: 'Spotify Premium',        a: 10.99,  c: 'bills',         p: P2 },
+    { d: 77, m: 'Metro Supermarket',      a: 102.40, c: 'groceries',     p: P2 },
+    { d: 79, m: 'Apple Store',            a: 229.00, c: 'shopping',      p: P1 },
+    { d: 81, m: 'Starbucks',              a: 7.80,   c: 'eatingout',     p: P1 },
+    { d: 83, m: 'Rexall Pharmacy',        a: 41.30,  c: 'health',        p: P2 },
+    { d: 85, m: 'Electric Utility',       a: 128.75, c: 'bills',         p: P1 },
+    { d: 87, m: 'Indigo Books',           a: 32.90,  c: 'shopping',      p: P2 },
+    { d: 89, m: 'Pho Saigon',             a: 44.20,  c: 'eatingout',     p: P1 },
+  ];
+
+  sampleTxns.forEach(t => {
+    txns.push({
+      id: uid(),
+      date: daysAgo(t.d),
+      merchant: t.m,
+      amount: t.a,
+      category: t.c,
+      person: t.p,
+      card: '',
+      note: '',
+      refund: false,
+      manual: false,
+    });
+  });
+
+  // Incomes across last ~90 days
+  const sampleIncomes = [
+    { d: 3,  a: 3250.00, type: 'salary',   p: P1, desc: 'Payroll Deposit' },
+    { d: 3,  a: 2980.00, type: 'salary',   p: P2, desc: 'Payroll Deposit' },
+    { d: 17, a: 3250.00, type: 'salary',   p: P1, desc: 'Payroll Deposit' },
+    { d: 17, a: 2980.00, type: 'salary',   p: P2, desc: 'Payroll Deposit' },
+    { d: 31, a: 3250.00, type: 'salary',   p: P1, desc: 'Payroll Deposit' },
+    { d: 31, a: 2980.00, type: 'salary',   p: P2, desc: 'Payroll Deposit' },
+    { d: 45, a: 3250.00, type: 'salary',   p: P1, desc: 'Payroll Deposit' },
+    { d: 45, a: 2980.00, type: 'salary',   p: P2, desc: 'Payroll Deposit' },
+    { d: 59, a: 3250.00, type: 'salary',   p: P1, desc: 'Payroll Deposit' },
+    { d: 59, a: 2980.00, type: 'salary',   p: P2, desc: 'Payroll Deposit' },
+    { d: 73, a: 3250.00, type: 'salary',   p: P1, desc: 'Payroll Deposit' },
+    { d: 73, a: 2980.00, type: 'salary',   p: P2, desc: 'Payroll Deposit' },
+    { d: 10, a: 850.00,  type: 'freelance',p: P1, desc: 'Consulting Invoice' },
+    { d: 55, a: 1200.00, type: 'freelance',p: P1, desc: 'Consulting Invoice' },
+  ];
+  sampleIncomes.forEach(i => {
+    incomes.push({
+      id: uid(),
+      date: daysAgo(i.d),
+      amount: i.a,
+      type: i.type,
+      person: i.p,
+      desc: i.desc,
+      note: '',
+    });
+  });
+
+  // Savings accounts + contributions
+  const emergencyId = uid();
+  const investId    = uid();
+  savAccts.push({ id: emergencyId, name: 'Emergency Fund', type: 'emergency', person: 'Joint', baseBalance: 5000, balance: 5000, goal: 15000 });
+  savAccts.push({ id: investId,    name: 'Index Fund',     type: 'investment', person: P1,     baseBalance: 12000, balance: 12000, goal: 50000 });
+
+  [75, 45, 15].forEach(d => {
+    contribs.push({ id: uid(), date: daysAgo(d), amount: 500, accountId: emergencyId, type: 'contribution', person: 'Joint', note: 'Monthly transfer' });
+  });
+  [75, 45, 15].forEach(d => {
+    contribs.push({ id: uid(), date: daysAgo(d), amount: 750, accountId: investId, type: 'contribution', person: P1, note: 'Monthly investment' });
+  });
+
+  // Sample mortgage
+  const startDate = new Date(); startDate.setFullYear(startDate.getFullYear() - 2); startDate.setDate(1);
+  const nextDate  = new Date(); nextDate.setMonth(nextDate.getMonth() + 1); nextDate.setDate(1);
+  const termEnd   = new Date(); termEnd.setFullYear(termEnd.getFullYear() + 3);
+  mortData.push({
+    id: 'mort_sample_' + Date.now(),
+    label: 'Primary Residence',
+    property: '123 Sample Street',
+    originalBalance: 450000,
+    annualRate: 0.0549,
+    rateType: 'fixed',
+    payment: 2550,
+    frequency: 'monthly',
+    startDate: startDate.toISOString().slice(0, 10),
+    nextDate: nextDate.toISOString().slice(0, 10),
+    termEnd: termEnd.toISOString().slice(0, 10),
+    color: '#1d4e89',
+  });
+  selectedMortId = mortData[0].id;
+
+  recalcAllBalances();
+  persist(); saveMortData();
+  localStorage.setItem('lt_mort_balances', JSON.stringify(mortBalances));
+  localStorage.setItem('lt_mort_voluntary', JSON.stringify(mortVoluntaryPmts));
+  localStorage.setItem('lt_welcomed', '1');
+  const wb = document.getElementById('welcome-banner'); if (wb) wb.style.display = 'none';
+
+  renderPills();
+  renderDashboard();
+  renderUploads();
+  if (typeof renderTxns === 'function')      renderTxns();
+  if (typeof renderIncome === 'function')    renderIncome();
+  if (typeof renderSavings === 'function')   renderSavings();
+  if (typeof renderMortgages === 'function') renderMortgages();
+
+  showConnStatus('Sample data loaded. Use "Clear local data" to start fresh.', 'ok');
+  alert('Sample data loaded! Explore the Dashboard, Transactions, Income, Savings, and Mortgages pages. Use Settings → Clear local data to start fresh.');
 }
 
 function repairIncomeEntries() {
