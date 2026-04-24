@@ -295,10 +295,47 @@ tbody tr:hover .row-menu-btn{opacity:1;}
 .ui-meta{font-size:11.5px;color:var(--faint);margin-top:2px;}
 .badge-done{padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;background:#eaf4ef;color:#2d6a4f;}
 
+/* ── HELP BUTTON ── */
+.help-btn{width:30px;height:30px;padding:0;background:transparent;border:1px solid var(--border);border-radius:50%;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s, color .15s, border-color .15s;flex-shrink:0;}
+.help-btn:hover{background:var(--bg);color:var(--ink);border-color:var(--muted);}
+.help-btn svg{width:16px;height:16px;}
+
 /* ── MODALS ── */
 .modal-overlay{position:fixed;inset:0;background:rgba(24,24,27,.45);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surface);border-radius:16px;padding:30px;width:480px;max-width:90vw;box-shadow:var(--shadow-lg);animation:slideUp .22s ease;}
+.help-modal{width:720px;max-width:94vw;padding:0;display:flex;flex-direction:column;max-height:86vh;overflow:hidden;}
+.help-head{padding:22px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+.help-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);line-height:1.2;}
+.help-sub{font-size:13px;color:var(--muted);margin-top:3px;}
+.help-close{background:transparent;border:none;color:var(--muted);font-size:24px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:6px;transition:background .15s, color .15s;}
+.help-close:hover{background:var(--bg);color:var(--ink);}
+.help-body{padding:20px 28px 28px;overflow-y:auto;flex:1;}
+.help-nav{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.help-nav a{font-size:12px;color:var(--muted);padding:5px 11px;border-radius:100px;background:var(--bg);text-decoration:none;transition:background .15s, color .15s;cursor:pointer;}
+.help-nav a:hover{background:var(--border);color:var(--ink);}
+.help-body section{margin-bottom:26px;scroll-margin-top:12px;}
+.help-body h3{font-family:'Playfair Display',serif;font-size:17px;color:var(--ink);margin-bottom:10px;}
+.help-body p{font-size:13.5px;color:var(--ink);line-height:1.65;margin-bottom:10px;}
+.help-body .help-note{font-size:12.5px;color:var(--muted);}
+.help-steps{list-style:none;padding:0;counter-reset:step;display:flex;flex-direction:column;gap:10px;margin-bottom:14px;}
+.help-steps li{position:relative;padding-left:30px;font-size:13.5px;color:var(--ink);line-height:1.6;counter-increment:step;}
+.help-steps li::before{content:counter(step);position:absolute;left:0;top:0;width:22px;height:22px;background:var(--bg);border:1px solid var(--border);border-radius:50%;font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;}
+.help-feat{list-style:none;padding:0;display:flex;flex-direction:column;gap:8px;}
+.help-feat li{font-size:13px;color:var(--ink);line-height:1.55;padding-left:16px;position:relative;}
+.help-feat li::before{content:"";position:absolute;left:0;top:7px;width:6px;height:6px;border-radius:50%;background:var(--accent);}
+.help-q{border:1px solid var(--border);border-radius:10px;margin-bottom:8px;background:var(--bg);overflow:hidden;}
+.help-q summary{padding:11px 14px;cursor:pointer;font-size:13px;color:var(--ink);font-weight:500;list-style:none;position:relative;padding-right:32px;}
+.help-q summary::-webkit-details-marker{display:none;}
+.help-q summary::after{content:"＋";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;transition:transform .2s;}
+.help-q[open] summary::after{content:"－";}
+.help-q[open] summary{border-bottom:1px solid var(--border);}
+.help-q p{padding:10px 14px 12px;margin:0;font-size:13px;color:var(--muted);line-height:1.6;}
+@media (max-width: 720px){
+  .help-modal{width:100%;max-height:100vh;border-radius:0;}
+  .help-head{padding:18px 18px 14px;}
+  .help-body{padding:16px 18px 22px;}
+}
 @keyframes slideUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .modal-title{font-family:'Playfair Display',serif;font-size:19px;margin-bottom:4px;}
 .modal-sub{color:var(--muted);font-size:12.5px;margin-bottom:20px;}
@@ -561,6 +598,9 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         </button>
         <span class="dark-label" style="font-size:11.5px;color:var(--muted);">Dark</span>
       </div>
+      <button class="help-btn" onclick="openHelpModal()" title="Help &amp; FAQ" aria-label="Help">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.9.5c0 1.5-2.4 2-2.4 3.5"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
+      </button>
       <button class="btn btn-ghost btn-sm hide-mobile" onclick="exportCSV()">↓ Export</button>
       <button class="btn btn-primary btn-sm" onclick="goNav('upload')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m-8-8l8-8 8 8"/></svg>
@@ -588,14 +628,16 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         <div style="flex:1;min-width:260px;">
           <div style="font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px;">Welcome to Expense Tracker 👋</div>
           <div style="font-size:13px;opacity:.85;line-height:1.6;max-width:520px;">
-            New here? Click <strong>Load sample data</strong> to explore with a pre-filled dataset. Or start fresh by uploading a CSV/PDF or adding a transaction manually. Head to <strong>Settings</strong> to customise categories and connect Google Sheets for sync across devices.
+            New here? Click <strong>Load sample data</strong> to explore with a pre-filled dataset, or <strong>Clear local data</strong> to start fresh. You can also upload a CSV/PDF or add transactions manually. Need help? Click the <strong>?</strong> button in the top bar.
           </div>
         </div>
         <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;">
           <button class="btn" onclick="loadSampleData()" style="background:rgba(255,255,255,.92);color:#1d4e89;border:1px solid rgba(255,255,255,.3);white-space:nowrap;font-weight:600;">Load sample data</button>
-          <button class="btn" onclick="document.getElementById('welcome-banner').style.display='none';localStorage.setItem('lt_welcomed','1')" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Got it ✕</button>
+          <button class="btn" onclick="clearLocalData()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Clear local data</button>
+          <button class="btn" onclick="dismissWelcomeBanner()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Got it ✕</button>
         </div>
       </div>
+      <button id="show-welcome-btn" onclick="showWelcomeBanner()" style="display:none;margin-bottom:14px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;">Show welcome banner</button>
       <div class="month-hero">
         <div>
           <div class="hero-label">Total Spent</div>
@@ -1407,6 +1449,92 @@ function doGet(e) {
 
 <!-- CAT DROPDOWN -->
 <div class="cat-dropdown" id="cat-dd"></div>
+
+<!-- HELP MODAL -->
+<div class="modal-overlay" id="help-modal">
+  <div class="modal help-modal">
+    <div class="help-head">
+      <div>
+        <div class="help-title">Help &amp; FAQ</div>
+        <div class="help-sub">Everything you need to get the tracker running.</div>
+      </div>
+      <button onclick="closeHelpModal()" class="help-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="help-body">
+      <nav class="help-nav">
+        <a href="#help-start">Quick start</a>
+        <a href="#help-features">Features</a>
+        <a href="#help-data">Data &amp; backup</a>
+        <a href="#help-faq">FAQ</a>
+      </nav>
+
+      <section id="help-start">
+        <h3>Quick start</h3>
+        <ol class="help-steps">
+          <li><strong>Try it with sample data.</strong> On the Dashboard, click <em>Load sample data</em> in the welcome banner (or in Settings → Data Tools) to populate the tracker with a pre-filled dataset. Explore, then click <em>Clear local data</em> to start fresh.</li>
+          <li><strong>Add your first transaction.</strong> Click the <em>＋ Add</em> button on Transactions, or hit <em>Upload Data</em> to bring in a CSV or PDF statement.</li>
+          <li><strong>Review the preview.</strong> If you upload a statement, the app shows the parsed rows and a total so you can confirm it matches before importing.</li>
+          <li><strong>Categorise.</strong> The tracker auto-categorises using keyword rules. You can edit categories inline — it learns from your corrections.</li>
+          <li><strong>Set up sync</strong> (optional). Connect a Google Sheet via Apps Script to back up and sync across devices. See <em>Settings → Google Sheets Setup Guide</em>.</li>
+        </ol>
+      </section>
+
+      <section id="help-features">
+        <h3>Features at a glance</h3>
+        <ul class="help-feat">
+          <li><strong>Dashboard</strong> — monthly, 3-month, year-to-date and full-year views with category tiles, spending pace, and trend arrows.</li>
+          <li><strong>Transactions</strong> — searchable, filterable, bulk-edit. Multi-select to re-categorise or delete in one go.</li>
+          <li><strong>Income</strong> — log salary, transfers from friends, or any offset against a category.</li>
+          <li><strong>Savings</strong> — track multiple accounts. Balances are always derived from your contribution log (never edited directly).</li>
+          <li><strong>Mortgages</strong> — amortisation schedule, voluntary payments, balance history.</li>
+          <li><strong>Budget targets</strong> — set a monthly target per category; tiles show a progress bar.</li>
+          <li><strong>Recurring detection</strong> — Monthly Commitments card auto-surfaces subscriptions and regulars.</li>
+          <li><strong>Duplicate checker</strong> — scans for suspiciously similar transactions before they clutter your history.</li>
+          <li><strong>Dark mode</strong> — toggle in the topbar. Works everywhere.</li>
+        </ul>
+      </section>
+
+      <section id="help-data">
+        <h3>Data &amp; backup</h3>
+        <p>Everything lives in your browser's localStorage. If you want data to survive browser clears or sync across devices, connect your own Google Sheet via Apps Script — follow the walkthrough in <em>Settings → Google Sheets Setup Guide</em>.</p>
+        <p><strong>Load / clear sample data</strong> — the welcome banner on the Dashboard has two buttons: <em>Load sample data</em> replaces local data with a demo dataset so you can explore, and <em>Clear local data</em> wipes this device (it does not touch any Google Sheet you've connected). Both are also in <em>Settings → Data Tools</em>.</p>
+        <p><strong>Export</strong> — the <em>↓ Export</em> button in the topbar dumps everything as CSV.</p>
+      </section>
+
+      <section id="help-faq">
+        <h3>FAQ</h3>
+        <details class="help-q">
+          <summary>Where is my data stored?</summary>
+          <p>Everything lives in your browser's localStorage. If you connect a Google Sheet via Apps Script, a copy also lives there (in your own Drive). Nothing is sent anywhere else.</p>
+        </details>
+        <details class="help-q">
+          <summary>What happens if I clear my browser or switch devices?</summary>
+          <p>If you haven't connected a Google Sheet, local data is lost. With Sheets connected, pull from the sheet on the new device and everything is restored.</p>
+        </details>
+        <details class="help-q">
+          <summary>My CSV or PDF import looks wrong — what do I do?</summary>
+          <p>Use the preview in the import modal to spot bad rows before committing. The total at the bottom should match your statement. If it doesn't, try remapping the columns (for CSV) or switching between bank/credit statement type (for PDF).</p>
+        </details>
+        <details class="help-q">
+          <summary>Can I edit a category after the fact?</summary>
+          <p>Yes. Click the category badge on any transaction row to change it. The tracker learns from repeated corrections of the same merchant.</p>
+        </details>
+        <details class="help-q">
+          <summary>Why can't I edit a savings balance directly?</summary>
+          <p>Balances are always derived from your contribution log. This prevents drift. Add a contribution (positive or negative) if you need to adjust.</p>
+        </details>
+        <details class="help-q">
+          <summary>How do I handle shared expenses with a partner?</summary>
+          <p>Log the transaction once, then log an offsetting income entry under <em>Income → Transfer</em> with the partner as the person and the original category as the offset. The net effect: you only see your share.</p>
+        </details>
+        <details class="help-q">
+          <summary>What does "Clear local data" do?</summary>
+          <p>Wipes everything on this device so you can start fresh. It does not touch any Google Sheet you may have connected — use Pull to reload from there.</p>
+        </details>
+      </section>
+    </div>
+  </div>
+</div>
 
 <!-- ADD PERSON MODAL -->
 <div class="modal-overlay" id="add-person-modal">
@@ -6339,7 +6467,43 @@ populatePersonRadios();
 if (localStorage.getItem('lt_welcomed')) {
   const wb = document.getElementById('welcome-banner');
   if (wb) wb.style.display = 'none';
+  const sb = document.getElementById('show-welcome-btn');
+  if (sb) sb.style.display = '';
 }
+
+function dismissWelcomeBanner() {
+  const wb = document.getElementById('welcome-banner');
+  if (wb) wb.style.display = 'none';
+  const sb = document.getElementById('show-welcome-btn');
+  if (sb) sb.style.display = '';
+  localStorage.setItem('lt_welcomed', '1');
+}
+function showWelcomeBanner() {
+  const wb = document.getElementById('welcome-banner');
+  if (wb) wb.style.display = '';
+  const sb = document.getElementById('show-welcome-btn');
+  if (sb) sb.style.display = 'none';
+  localStorage.removeItem('lt_welcomed');
+  if (wb) wb.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function openHelpModal() {
+  const m = document.getElementById('help-modal');
+  if (m) m.classList.add('open');
+}
+function closeHelpModal() {
+  const m = document.getElementById('help-modal');
+  if (m) m.classList.remove('open');
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const m = document.getElementById('help-modal');
+    if (m && m.classList.contains('open')) closeHelpModal();
+  }
+});
+document.addEventListener('click', (e) => {
+  const m = document.getElementById('help-modal');
+  if (m && m.classList.contains('open') && e.target === m) closeHelpModal();
+});
 updateSyncDot(sheetsUrl ? 'ok' : 'off');
 setSyncLabel(sheetsUrl ? 'Connected' : 'Not connected');
 const _validPages = ['dashboard','transactions','income','savings','mortgages','upload','trash','settings'];
