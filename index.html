@@ -5169,8 +5169,6 @@ function loadSampleData() {
   persist(); saveMortData();
   localStorage.setItem('lt_mort_balances', JSON.stringify(mortBalances));
   localStorage.setItem('lt_mort_voluntary', JSON.stringify(mortVoluntaryPmts));
-  localStorage.setItem('lt_welcomed', '1');
-  const wb = document.getElementById('welcome-banner'); if (wb) wb.style.display = 'none';
 
   renderPills();
   renderDashboard();
