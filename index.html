@@ -229,6 +229,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);font-s
 .tcp:hover{color:var(--ink);border-color:var(--muted);}
 .tcp-transfer{border-color:#1d4e89;color:#1d4e89;}
 .tcp-transfer.active{background:#1d4e89;color:#fff;}
+.tcp-needs{border-color:#b85416;color:#b85416;}
+.tcp-needs.active{background:#b85416;color:#fff;}
 .txn-date-input{border:none;background:transparent;font-size:12px;color:var(--faint);font-family:'Inter',sans-serif;cursor:pointer;width:96px;padding:0;outline:none;}
 .txn-date-input:focus{color:var(--ink);}
 .txn-date-input::-webkit-calendar-picker-indicator{opacity:0.35;cursor:pointer;}
@@ -1970,6 +1972,7 @@ let fvBonusVisible   = true;
 // CF_FIXED_CATS is derived dynamically from CATS where fixed===true (see renderChartSection)
 let txnSort = 'date-desc';
 let txnTypeFilter  = ''; // '', 'expenses', 'transfer', 'income'
+let txnNeedsFilter = ''; // '', 'needs', 'wants' — orthogonal sub-filter on expenses
 let txnCatFilter   = new Set();
 let txnCardFilter  = new Set();
 let txnMonthFilter = new Set();
@@ -3044,6 +3047,7 @@ function setTxnCatPill(key) {
 }
 function goToCatFilter(catKey) {
   txnTypeFilter  = '';
+  txnNeedsFilter = '';
   txnCatFilter   = new Set([catKey]);
   txnCardFilter  = new Set();
   txnMonthFilter = new Set();
@@ -3054,10 +3058,22 @@ function goToCatFilter(catKey) {
 function setTxnTypePill(type) {
   txnTypeFilter = txnTypeFilter === type ? '' : type;
   if (txnTypeFilter) txnCatFilter = new Set();
+  // Needs/Wants only applies to expenses; clear it when switching off expenses
+  if (txnTypeFilter && txnTypeFilter !== 'expenses') txnNeedsFilter = '';
+  renderTxns();
+}
+function setTxnNeedsPill(kind) {
+  // Toggle between '', 'needs', 'wants'. Selecting clears any cat filter and ensures 'expenses' type is on.
+  txnNeedsFilter = txnNeedsFilter === kind ? '' : kind;
+  if (txnNeedsFilter) {
+    txnTypeFilter = 'expenses';
+    txnCatFilter = new Set();
+  }
   renderTxns();
 }
 function resetTxnFilters() {
   txnTypeFilter  = '';
+  txnNeedsFilter = '';
   txnCatFilter   = new Set();
   txnCardFilter  = new Set();
   txnMonthFilter = new Set();
@@ -3148,11 +3164,12 @@ function renderTxns() {
   [...txnCardFilter].filter(v => !allCards.includes(v)).forEach(v => txnCardFilter.delete(v));
   buildMsDrop('ms-card', allCards.map(c => ({value: c, label: c})), txnCardFilter);
 
-  // Type pills
+  // Type pills + Needs/Wants sub-filter
   const pillsEl = document.getElementById('txn-cat-pills');
   if (pillsEl) {
     const tp = (type, label) => `<span class="tcp tcp-transfer${txnTypeFilter === type ? ' active' : ''}" onclick="setTxnTypePill('${type}')">${label}</span>`;
-    pillsEl.innerHTML = tp('expenses','Expenses') + tp('transfer','Transfers') + tp('income','Income');
+    const np = (kind, label) => `<span class="tcp tcp-needs${txnNeedsFilter === kind ? ' active' : ''}" onclick="setTxnNeedsPill('${kind}')">${label}</span>`;
+    pillsEl.innerHTML = tp('expenses','Expenses') + tp('transfer','Transfers') + tp('income','Income') + '<span style="display:inline-block;width:1px;height:14px;background:var(--border);margin:0 6px;vertical-align:middle;"></span>' + np('needs','Needs') + np('wants','Wants');
   }
   // Sort icons + active column highlight
   const dateIcon = document.getElementById('txn-date-icon');
@@ -3176,6 +3193,12 @@ function renderTxns() {
     } else {
       if (txnCatFilter.size > 0 && (t.incomeType || t.savingsAccountId)) return false;
       if (txnCatFilter.size > 0 && !txnCatFilter.has(t.category)) return false;
+    }
+    // Needs/Wants sub-filter (only meaningful on expense txns)
+    if (txnNeedsFilter && !t.incomeType && !t.savingsAccountId) {
+      const isN = isNeeds(t);
+      if (txnNeedsFilter === 'needs' && !isN) return false;
+      if (txnNeedsFilter === 'wants' && isN) return false;
     }
     if (cpf && t.person !== cpf) return false;
     if (txnCardFilter.size > 0  && !txnCardFilter.has(t.card))                    return false;
