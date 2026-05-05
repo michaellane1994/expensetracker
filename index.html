@@ -6423,6 +6423,10 @@ function renderMortgages() {
     const rt = m.rateType || 'fixed';
     return `<span class="mort-rate-type-badge ${rt}">${rt === 'variable' ? 'Variable' : 'Fixed'}</span>`;
   };
+  const debtTypeLabel = (t) => {
+    const labels = { mortgage:'Mortgage', auto:'Auto loan', student:'Student loan', personal:'Personal loan', line_of_credit:'Line of credit', credit_card:'Credit card', other:'Other' };
+    return labels[t || 'mortgage'] || 'Mortgage';
+  };
 
   wrap.innerHTML = `
     <div class="mort-hero">
@@ -6451,7 +6455,7 @@ function renderMortgages() {
           <span class="mort-term-badge">Term to ${m.termEnd.substring(0, 7)}</span>
           ${rateTypeBadge(m)}
           <div class="mort-card-label" style="color:${m.color};">${m.label}</div>
-          <div class="mort-card-property">${m.property}</div>
+          <div class="mort-card-property">${debtTypeLabel(m.debtType)}${m.property ? ' · ' + m.property : ''}</div>
           <div class="mort-card-balance">${fmt(m.balance)}</div>
           <div class="mort-card-rate">${(m.annualRate * 100).toFixed(2)}% &middot; ${m.frequency === 'biweekly' ? 'Biweekly' : 'Monthly'}</div>
           <div class="mort-card-footer">
@@ -6652,8 +6656,18 @@ function showMortForm(id) {
           <input class="mort-form-input" id="mf-label" value="${m?.label || ''}" placeholder="e.g. Primary">
         </div>
         <div class="mort-form-group">
-          <div class="mort-form-label">Property</div>
-          <input class="mort-form-input" id="mf-property" value="${m?.property || ''}" placeholder="e.g. Personal Home">
+          <div class="mort-form-label">Debt Type</div>
+          <select class="mort-form-input" id="mf-debt-type">
+            ${['mortgage','auto','student','personal','line_of_credit','credit_card','other'].map(k => {
+              const labels = { mortgage:'Mortgage', auto:'Auto loan', student:'Student loan', personal:'Personal loan', line_of_credit:'Line of credit', credit_card:'Credit card', other:'Other' };
+              const cur = m?.debtType || 'mortgage';
+              return `<option value="${k}" ${cur === k ? 'selected' : ''}>${labels[k]}</option>`;
+            }).join('')}
+          </select>
+        </div>
+        <div class="mort-form-group">
+          <div class="mort-form-label">Property / Lender</div>
+          <input class="mort-form-input" id="mf-property" value="${m?.property || ''}" placeholder="e.g. Personal Home, BMO Visa">
         </div>
         <div class="mort-form-group">
           <div class="mort-form-label">Original Balance ($)</div>
@@ -6712,6 +6726,7 @@ function closeMortForm() { const el = document.getElementById('mort-form-modal')
 
 function submitMortForm() {
   const label     = document.getElementById('mf-label').value.trim();
+  const debtType  = document.getElementById('mf-debt-type')?.value || 'mortgage';
   const property  = document.getElementById('mf-property').value.trim();
   const origBal   = parseFloat((document.getElementById('mf-orig-bal').value || '').replace(/,/g, '')) || 0;
   const rateRaw   = parseFloat(document.getElementById('mf-rate').value) || 0;
@@ -6729,10 +6744,10 @@ function submitMortForm() {
   const annualRate = rateRaw / 100;
   if (_mortEditId) {
     const idx = mortData.findIndex(m => m.id === _mortEditId);
-    if (idx >= 0) mortData[idx] = { ...mortData[idx], label, property, originalBalance: origBal, annualRate, rateType, payment, frequency: freq, startDate, nextDate, termEnd, color };
+    if (idx >= 0) mortData[idx] = { ...mortData[idx], label, debtType, property, originalBalance: origBal, annualRate, rateType, payment, frequency: freq, startDate, nextDate, termEnd, color };
   } else {
     const id = 'mort_' + Date.now();
-    mortData.push({ id, label, property, originalBalance: origBal, annualRate, rateType, payment, frequency: freq, startDate, nextDate, termEnd, color });
+    mortData.push({ id, label, debtType, property, originalBalance: origBal, annualRate, rateType, payment, frequency: freq, startDate, nextDate, termEnd, color });
     selectedMortId = id;
   }
   saveMortData(); closeMortForm(); renderMortgages(); autoPush();
