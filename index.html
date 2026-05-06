@@ -773,7 +773,11 @@ tbody tr:hover .row-menu-btn{opacity:1;}
     <button class="dash-pill" id="dp-latest" onclick="setDashPeriod('latest')">Latest Month</button>
     <button class="dash-pill" id="dp-3m"     onclick="setDashPeriod('3m')">Last 3 Months</button>
     <button class="dash-pill" id="dp-ytd"    onclick="setDashPeriod('ytd')">Year to Date</button>
-    <button id="dash-push-btn" onclick="manualPush()" style="margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;">
+    <div style="position:relative;margin-left:auto;flex-shrink:0;" id="dash-currency-wrap">
+      <button class="dash-pill" id="dash-currency-btn" onclick="toggleCurrencyDropdown(event)" title="Display currency"><span id="dash-currency-label">CAD</span> ▾</button>
+      <div id="dash-currency-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 0;min-width:200px;max-height:300px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.15);"></div>
+    </div>
+    <button id="dash-push-btn" onclick="manualPush()" style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--ink);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;white-space:nowrap;">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
       <span class="push-label">Push to Drive</span>
     </button>
@@ -2528,8 +2532,9 @@ function _heatFmt(n, compact) {
   n = n || 0;
   const neg = n < 0;
   const a = Math.abs(n);
-  const sym = '$';
-  if (!compact) return (neg ? '-' : '') + sym + a.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const cfg = CURRENCIES[globalCurrency] || CURRENCIES.CAD;
+  const sym = cfg.short;
+  if (!compact) return (neg ? '-' : '') + sym + a.toLocaleString('en-CA', { minimumFractionDigits: cfg.decimals, maximumFractionDigits: cfg.decimals });
   if (a >= 1000) {
     const k = a / 1000;
     return (neg ? '-' : '') + sym + (k >= 10 ? k.toFixed(0) : k.toFixed(1)) + 'k';
@@ -6448,7 +6453,77 @@ function exportCSV() {
 }
 
 // ── UTILS ────────────────────────────────────────────────
-function fmt(n) { return '$' + (n || 0).toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+// ── CURRENCY ──
+const CURRENCIES = {
+  CAD: { short: '$',   long: 'C$',   decimals: 2, label: 'Canadian Dollar (CAD)' },
+  USD: { short: '$',   long: 'US$',  decimals: 2, label: 'US Dollar (USD)' },
+  GBP: { short: '£',   long: '£',    decimals: 2, label: 'British Pound (GBP)' },
+  EUR: { short: '€',   long: '€',    decimals: 2, label: 'Euro (EUR)' },
+  AUD: { short: '$',   long: 'A$',   decimals: 2, label: 'Australian Dollar (AUD)' },
+  NZD: { short: '$',   long: 'NZ$',  decimals: 2, label: 'NZ Dollar (NZD)' },
+  CHF: { short: 'Fr ', long: 'CHF ', decimals: 2, label: 'Swiss Franc (CHF)' },
+  JPY: { short: '¥',   long: 'JP¥',  decimals: 0, label: 'Japanese Yen (JPY)' },
+  HKD: { short: '$',   long: 'HK$',  decimals: 2, label: 'Hong Kong Dollar (HKD)' },
+  SGD: { short: '$',   long: 'S$',   decimals: 2, label: 'Singapore Dollar (SGD)' },
+  INR: { short: '₹',   long: '₹',    decimals: 2, label: 'Indian Rupee (INR)' },
+  MXN: { short: '$',   long: 'Mex$', decimals: 2, label: 'Mexican Peso (MXN)' },
+};
+let globalCurrency = localStorage.getItem('lt_currency') || 'CAD';
+if (!CURRENCIES[globalCurrency]) globalCurrency = 'CAD';
+function setGlobalCurrency(code) {
+  if (!CURRENCIES[code]) return;
+  globalCurrency = code;
+  localStorage.setItem('lt_currency', code);
+  renderCurrencyDropdown();
+  const menu = document.getElementById('dash-currency-menu');
+  if (menu) menu.style.display = 'none';
+  if (typeof renderDashboard    === 'function') renderDashboard();
+  if (typeof renderTxns         === 'function') renderTxns();
+  if (typeof renderSavings      === 'function') renderSavings();
+  if (typeof renderIncomes      === 'function') renderIncomes();
+  if (typeof renderMortgageView === 'function') renderMortgageView();
+}
+function toggleCurrencyDropdown(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('dash-currency-menu');
+  if (!menu) return;
+  renderCurrencyDropdown();
+  const opening = menu.style.display === 'none';
+  menu.style.display = opening ? 'block' : 'none';
+  if (opening) {
+    const close = ev => {
+      if (!document.getElementById('dash-currency-wrap').contains(ev.target)) {
+        menu.style.display = 'none';
+        document.removeEventListener('click', close);
+      }
+    };
+    document.addEventListener('click', close);
+  }
+}
+function renderCurrencyDropdown() {
+  const lbl = document.getElementById('dash-currency-label');
+  if (lbl) lbl.textContent = globalCurrency;
+  const menu = document.getElementById('dash-currency-menu');
+  if (!menu) return;
+  menu.innerHTML = Object.keys(CURRENCIES).map(code => {
+    const c = CURRENCIES[code];
+    const active = code === globalCurrency;
+    return `<div onclick="setGlobalCurrency('${code}')" style="display:flex;align-items:center;gap:10px;padding:7px 12px;cursor:pointer;font-size:12.5px;${active ? 'background:var(--row-hover);' : ''}">
+      <span style="display:inline-block;min-width:30px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;">${c.short.trim() || code}</span>
+      <span style="flex:1;color:var(--ink);">${c.label}</span>
+      ${active ? '<span style="color:var(--accent);font-size:13px;">✓</span>' : ''}
+    </div>`;
+  }).join('');
+}
+function fmt(n, currency) {
+  currency = currency || globalCurrency;
+  const cfg = CURRENCIES[currency] || CURRENCIES.CAD;
+  const sym = currency === globalCurrency ? cfg.short : cfg.long;
+  const decs = cfg.decimals;
+  const num = n || 0;
+  const abs = Math.abs(num).toLocaleString('en-CA', { minimumFractionDigits: decs, maximumFractionDigits: decs });
+  return (num < 0 ? '-' : '') + sym + abs;
+}
 function isNeeds(t) { return t.needs !== undefined ? t.needs : !!CAT[t.category]?.fixed; }
 function setNeeds(id, val) {
   const t = txns.find(x => x.id === id);
@@ -7269,6 +7344,7 @@ setTimeout(gdRestoreSessionIfAny, 300);
 document.querySelectorAll('input[name="stmt-type"]').forEach(r => r.addEventListener('change', updateImportPreview));
 const _validPages = ['dashboard','transactions','income','savings','mortgages','upload','trash','settings'];
 const _savedPage = localStorage.getItem('lt_last_page');
+renderCurrencyDropdown();
 goNav(_validPages.includes(_savedPage) ? _savedPage : 'dashboard');
 renderUploads();
 </script>
