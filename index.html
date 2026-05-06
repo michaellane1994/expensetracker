@@ -783,9 +783,10 @@ tbody tr:hover .row-menu-btn{opacity:1;}
 
     <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
+      <!-- PRESERVED: welcome banner for template -->
       <div id="welcome-banner" style="background:linear-gradient(135deg,#1d4e89,#2d6a4f);border-radius:var(--radius);padding:24px 28px;margin-bottom:18px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div style="flex:1;min-width:260px;">
-          <div style="font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px;">Welcome to Expense Tracker 👋</div>
+          <div style="font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px;">Welcome to Expense Tracker</div>
           <div style="font-size:13px;opacity:.85;line-height:1.6;max-width:520px;">
             New here? Click <strong>Load sample data</strong> to explore with a pre-filled dataset, or <strong>Clear local data</strong> to start fresh. You can also upload a CSV/PDF or add transactions manually. Need help? Click the <strong>?</strong> button in the top bar.
           </div>
@@ -793,132 +794,175 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;">
           <button class="btn" onclick="loadSampleData()" style="background:rgba(255,255,255,.92);color:#1d4e89;border:1px solid rgba(255,255,255,.3);white-space:nowrap;font-weight:600;">Load sample data</button>
           <button class="btn" onclick="clearLocalData()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Clear local data</button>
-          <button class="btn" onclick="dismissWelcomeBanner()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Got it ✕</button>
+          <button class="btn" onclick="dismissWelcomeBanner()" style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);white-space:nowrap;">Got it x</button>
         </div>
       </div>
       <button id="show-welcome-btn" onclick="showWelcomeBanner()" style="display:none;margin-bottom:14px;padding:6px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;">Show welcome banner</button>
-      <div class="month-hero">
-        <div>
-          <div class="hero-label">Total Spent</div>
-          <div class="hero-total" id="hero-total">$0.00</div>
-          <div class="hero-sub" id="hero-sub">Import a CSV or PDF to get started</div>
-          <div id="hero-yoy" style="display:none;font-size:12px;margin-top:5px;"></div>
-        </div>
-        <div class="hero-stats">
-          <div class="hsi">
-            <div class="hs-label">Transactions</div>
-            <div class="hs-val" id="hero-txns">0</div>
-            <div class="hs-sub">this period</div>
-          </div>
-          <div class="hsi">
-            <div class="hs-label">Daily Avg</div>
-            <div class="hs-val" id="hero-avg">$0</div>
-            <div class="hs-sub">per day spent</div>
-          </div>
-          <div class="hsi">
-            <div class="hs-label">Largest</div>
-            <div class="hs-val" id="hero-largest">—</div>
-            <div class="hs-sub" id="hero-lm">—</div>
-          </div>
-          <div class="hsi">
-            <div class="hs-label">Needs</div>
-            <div class="hs-val" id="hero-fixed">—</div>
-            <div class="hs-sub" id="hero-fixed-sub">committed</div>
-          </div>
-          <div class="hsi">
-            <div class="hs-label">Wants</div>
-            <div class="hs-val" id="hero-disc">—</div>
-            <div class="hs-sub" id="hero-disc-sub">flexible</div>
-          </div>
-          <div class="hsi">
-            <div class="hs-label">Savings Rate</div>
-            <div class="hs-val" id="hero-savings-rate">—</div>
-            <div class="hs-sub">of income</div>
-          </div>
-        </div>
-      </div>
-      <div id="hero-on-track" style="display:none;"></div>
 
-      <!-- Income / Savings summary row -->
-      <div class="summary-row" id="summary-row">
-        <div class="summary-card" onclick="goNav('income')">
-          <div class="sc-left">
-            <div class="sc-label">Total Income</div>
-            <div class="sc-val" id="dash-income">$0</div>
-            <div class="sc-sub" id="dash-income-sub">0 entries</div>
-            <div class="sc-sub" id="dash-income-bonus" style="margin-top:2px;font-size:11px;"></div>
-            <div class="sc-yoy" id="dash-income-yoy" style="display:none;"></div>
-          </div>
-          <div class="sc-icon" style="background:#eaf4ef;color:#2d6a4f;">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <!-- Section 1: Spending overview bento (hero + 6 stat tiles) -->
+      <section class="dash-section">
+        <div class="dash-section-head">
+          <div class="dash-section-head-text">
+            <div class="dash-section-eyebrow">This period</div>
+            <div class="dash-section-title">Spending overview</div>
           </div>
         </div>
-        <div class="summary-card" onclick="goNav('transactions')">
-          <div class="sc-left">
-            <div class="sc-label">Total Net</div>
-            <div class="sc-val" id="dash-net">$0</div>
-            <div class="sc-sub" id="dash-net-sub">income minus expenses</div>
-            <div class="sc-yoy" id="dash-net-yoy" style="display:none;"></div>
-          </div>
-          <div class="sc-icon" style="background:#eaf0f9;color:#1d4e89;">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          </div>
-        </div>
-        <div class="summary-card" onclick="goNav('savings')">
-          <div class="sc-left">
-            <div class="sc-label">Total Savings</div>
-            <div class="sc-val" id="dash-savings">$0</div>
-            <div class="sc-sub" id="dash-savings-sub">across all accounts</div>
-          </div>
-          <div class="sc-icon" style="background:#fef3e2;color:#b45309;">
-            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Dashboard category filter -->
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:600;white-space:nowrap;">Expenses by Category</div>
-        <div style="position:relative;" id="dash-cat-wrap">
-          <button class="dash-pill" onclick="toggleCatDropdown(event)"><span id="dash-cat-label">All Categories</span> ▾</button>
-          <div id="dash-cat-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 0;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.15);">
-            <div style="padding:6px 10px 7px;border-bottom:1px solid var(--border);display:flex;gap:4px;" onclick="event.stopPropagation()">
-              <button id="dcm-all"    onclick="setDashCatMode('all')"    style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">All</button>
-              <button id="dcm-top5"   onclick="setDashCatMode('top5')"   style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">Top 5</button>
-              <button id="dcm-custom" onclick="setDashCatMode('custom')"  style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">Custom</button>
+        <div class="dash-overview">
+          <div class="dash-overview-hero">
+            <div class="hero-label">Total Spent</div>
+            <div class="hero-total" id="hero-total">$0.00</div>
+            <div class="hero-sub" id="hero-sub">Import a CSV or PDF to get started</div>
+            <div id="hero-yoy" style="display:none;font-size:12px;margin-top:5px;"></div>
+            <div class="hero-aux">
+              <span><strong id="hero-txns">0</strong> txns</span>
+              <span class="dot">·</span>
+              <span><strong id="hero-avg">$0</strong> daily avg</span>
+              <span class="dot">·</span>
+              <span>Largest <strong id="hero-largest">—</strong> <span id="hero-lm" class="muted">—</span></span>
             </div>
-            <div id="dash-cat-items" style="max-height:260px;overflow-y:auto;padding:2px 0;"></div>
+            <div id="hero-on-track" style="display:none;margin-top:var(--s-3);"></div>
+          </div>
+          <div class="dash-overview-stats">
+            <div class="o-stat" onclick="goNav('income')">
+              <div class="o-label">Income</div>
+              <div class="o-val" id="dash-income">$0</div>
+              <div class="o-sub" id="dash-income-sub">0 entries</div>
+              <div class="o-sub" id="dash-income-bonus" style="font-size:10.5px;margin-top:1px;"></div>
+              <div class="o-sub" id="dash-income-yoy" style="display:none;"></div>
+            </div>
+            <div class="o-stat" onclick="goNav('transactions')">
+              <div class="o-label">Net</div>
+              <div class="o-val" id="dash-net">$0</div>
+              <div class="o-sub" id="dash-net-sub">income minus expenses</div>
+              <div class="o-sub" id="dash-net-yoy" style="display:none;"></div>
+            </div>
+            <div class="o-stat" onclick="goNav('savings')">
+              <div class="o-label">Savings</div>
+              <div class="o-val" id="dash-savings">$0</div>
+              <div class="o-sub" id="dash-savings-sub">across accounts</div>
+            </div>
+            <div class="o-stat" onclick="filterTxnsByKind('needs')" title="View needs transactions">
+              <div class="o-label">Needs</div>
+              <div class="o-val" id="hero-fixed">—</div>
+              <div class="o-sub" id="hero-fixed-sub">committed</div>
+            </div>
+            <div class="o-stat" onclick="filterTxnsByKind('wants')" title="View wants transactions">
+              <div class="o-label">Wants</div>
+              <div class="o-val" id="hero-disc">—</div>
+              <div class="o-sub" id="hero-disc-sub">flexible</div>
+            </div>
+            <div class="o-stat" title="Savings rate">
+              <div class="o-label">Savings rate</div>
+              <div class="o-val" id="hero-savings-rate">—</div>
+              <div class="o-sub">of income</div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- 13-category grid, 7 + 6 -->
-      <div class="cat-grid" id="cat-grid"></div>
-
-      <div class="card" id="commitments-card" style="margin-bottom:18px;display:none;">
-        <div class="card-head">
-          <div class="card-title">Monthly Commitments</div>
-          <div id="commitments-total" style="font-size:13px;font-weight:600;color:var(--ink);"></div>
+        <!-- Categories inline within section 1 -->
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:var(--s-5);margin-bottom:var(--s-3);flex-wrap:wrap;">
+          <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;">Expenses by category</div>
+          <div style="position:relative;" id="dash-cat-wrap">
+            <button class="dash-pill" onclick="toggleCatDropdown(event)"><span id="dash-cat-label">All Categories</span> ▾</button>
+            <div id="dash-cat-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 0;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.15);">
+              <div style="padding:6px 10px 7px;border-bottom:1px solid var(--border);display:flex;gap:4px;" onclick="event.stopPropagation()">
+                <button id="dcm-all"    onclick="setDashCatMode('all')"    style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">All</button>
+                <button id="dcm-top5"   onclick="setDashCatMode('top5')"   style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">Top 5</button>
+                <button id="dcm-custom" onclick="setDashCatMode('custom')"  style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">Custom</button>
+              </div>
+              <div id="dash-cat-items" style="max-height:260px;overflow-y:auto;padding:2px 0;"></div>
+            </div>
+          </div>
         </div>
-        <div class="card-body" id="commitments-body"></div>
-      </div>
+        <div class="cat-grid" id="cat-grid"></div>
+      </section>
 
-      <div class="charts-row">
+      <!-- Section 2: Commitments (conditional) -->
+      <section class="dash-section" id="commitments-section" style="display:none;">
+        <div class="dash-section-head">
+          <div class="dash-section-head-text">
+            <div class="dash-section-eyebrow">What's locked in</div>
+            <div class="dash-section-title">Monthly commitments</div>
+          </div>
+          <div class="dash-section-actions">
+            <span id="commitments-total" style="font-size:13px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--border);padding:6px 14px;border-radius:999px;"></span>
+          </div>
+        </div>
+        <div class="card" id="commitments-card">
+          <div class="card-body" id="commitments-body" style="padding-top:var(--s-5);padding-bottom:var(--s-5);"></div>
+        </div>
+      </section>
+
+      <!-- Section 3: Cash flow forecast -->
+      <section class="dash-section">
+        <div class="dash-section-head">
+          <div class="dash-section-head-text">
+            <div class="dash-section-eyebrow">Looking ahead</div>
+            <div class="dash-section-title">Cash flow forecast</div>
+            <div class="dash-section-sub">Projected balance from your historical income and spending. Adjust the avg-from window or exclude categories to refine.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head" style="flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;width:100%;">
+              <span id="cashflow-sub" style="font-size:11px;color:var(--muted);margin-right:auto;"></span>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <label style="font-size:11px;color:var(--muted);white-space:nowrap;">From</label>
+                <select id="cf-from-month" onchange="setCfFrom(this.value)"
+                  style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;"></select>
+                <label style="font-size:11px;color:var(--muted);white-space:nowrap;">To</label>
+                <select id="cf-to-month" onchange="setCfTo(this.value)"
+                  style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;"></select>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <label style="font-size:11px;color:var(--muted);white-space:nowrap;">Start balance</label>
+                <input type="number" id="cf-start-bal" step="1000" placeholder="auto"
+                  style="width:88px;font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);"
+                  onchange="setCfStart(this.value)">
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;">
+                <label style="font-size:11px;color:var(--muted);white-space:nowrap;">Avg from</label>
+                <select id="cf-avg-from" onchange="setCfAvgFrom(this.value)"
+                  style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;"></select>
+              </div>
+              <button id="cf-bonus-btn" class="btn btn-ghost btn-sm" onclick="toggleCfBonus()" style="font-size:11px;padding:2px 8px;">Bonus: on</button>
+              <div class="ms-wrap" id="ms-cf-excl" style="position:relative;">
+                <button class="ms-btn" id="ms-cf-excl-btn" onclick="openMs(event,'ms-cf-excl')"
+                  style="font-size:11px;padding:2px 22px 2px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;cursor:pointer;outline:none;height:22px;">Exclude categories</button>
+                <div class="ms-drop" id="ms-cf-excl-drop"></div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" style="padding-bottom:16px;"><canvas id="cashflowChart"></canvas></div>
+        </div>
+      </section>
+
+      <!-- Section 4: Needs vs wants over time (chart + heatmap table toggle) -->
+      <section class="dash-section">
+        <div class="dash-section-head">
+          <div class="dash-section-head-text">
+            <div class="dash-section-eyebrow">Trends</div>
+            <div class="dash-section-title">Needs vs wants over time</div>
+            <div class="dash-section-sub">How committed-versus-flexible spending shifts month over month. Toggle to per-category breakdown if needed.</div>
+          </div>
+        </div>
         <div class="card">
           <div class="card-head">
             <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-              <div class="card-title">Spend by Month &amp; Category</div>
               <div style="display:flex;gap:2px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px;">
-                <button id="chart-view-cat" class="btn btn-sm" onclick="setChartView('category')" style="padding:2px 9px;font-size:11.5px;">By Category</button>
                 <button id="chart-view-fv"  class="btn btn-sm" onclick="setChartView('fixed-variable')" style="padding:2px 9px;font-size:11.5px;">Needs vs Wants</button>
+                <button id="chart-view-cat" class="btn btn-sm" onclick="setChartView('category')" style="padding:2px 9px;font-size:11.5px;">By Category</button>
+              </div>
+              <div class="heat-view-toggle">
+                <button id="chart-display-graph" class="btn btn-sm" onclick="setChartDisplay('chart')" style="padding:2px 9px;font-size:11.5px;">Graph</button>
+                <button id="chart-display-table" class="btn btn-sm" onclick="setChartDisplay('table')" style="padding:2px 9px;font-size:11.5px;">Table</button>
               </div>
               <div style="position:relative;" id="chart-cat-wrap">
-                <button class="dash-pill" onclick="toggleChartCatDropdown(event)"><span id="chart-cat-label">All Categories</span> ▾</button>
-                <div id="chart-cat-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 0;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.15);">
-                  <div style="padding:5px 10px 6px;border-bottom:1px solid var(--border);display:flex;gap:10px;">
-                    <button onclick="selectAllChartCats()" style="font-size:11.5px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">Select all</button>
-                    <span style="color:var(--faint);">·</span>
-                    <button onclick="deselectAllChartCats()" style="font-size:11.5px;color:var(--accent);background:none;border:none;cursor:pointer;padding:0;font-family:'Inter',sans-serif;">Deselect all</button>
+                <button class="dash-pill" onclick="toggleChartCatDropdown(event)"><span id="chart-cat-label">Top 5</span> ▾</button>
+                <div id="chart-cat-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px 0;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.15);">
+                  <div style="padding:6px 10px 7px;border-bottom:1px solid var(--border);display:flex;gap:4px;" onclick="event.stopPropagation()">
+                    <button id="ccm-all"    onclick="setChartCatMode('all')"    style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">All</button>
+                    <button id="ccm-top5"   onclick="setChartCatMode('top5')"   style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">Top 5</button>
+                    <button id="ccm-custom" onclick="setChartCatMode('custom')" style="flex:1;font-size:11.5px;font-family:'Inter',sans-serif;padding:3px 0;border-radius:5px;border:1px solid var(--border);cursor:pointer;background:var(--bg);color:var(--ink);">Custom</button>
                   </div>
                   <div id="chart-cat-items" style="max-height:260px;overflow-y:auto;padding:2px 0;"></div>
                 </div>
@@ -937,58 +981,37 @@ tbody tr:hover .row-menu-btn{opacity:1;}
               <select id="chart-to" onchange="renderChartSection()"></select>
             </div>
           </div>
-          <div class="card-body" style="padding-bottom:16px;"><canvas id="timeChart"></canvas></div>
+          <div class="card-body" style="padding-bottom:16px;">
+            <canvas id="timeChart"></canvas>
+            <div id="timeTable" class="heat-wrap" style="display:none;"></div>
+          </div>
         </div>
-        <div class="card">
-          <div class="card-head"><div class="card-title">Top Categories</div></div>
-          <div class="card-body"><div class="subcat-rows" id="subcat-rows"></div></div>
-        </div>
-      </div>
+      </section>
 
-      <div class="card" style="margin-bottom:18px;">
-        <div class="card-head" style="flex-wrap:wrap;gap:8px;">
-          <div class="card-title">Cash Flow Forecast</div>
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <span id="cashflow-sub" style="font-size:11px;color:var(--muted);"></span>
-            <div style="display:flex;align-items:center;gap:5px;">
-              <label style="font-size:11px;color:var(--muted);white-space:nowrap;">From</label>
-              <select id="cf-from-month" onchange="setCfFrom(this.value)"
-                style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;"></select>
-              <label style="font-size:11px;color:var(--muted);white-space:nowrap;">To</label>
-              <select id="cf-to-month" onchange="setCfTo(this.value)"
-                style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;"></select>
-            </div>
-            <div style="display:flex;align-items:center;gap:5px;">
-              <label style="font-size:11px;color:var(--muted);white-space:nowrap;">Start balance</label>
-              <input type="number" id="cf-start-bal" step="1000" placeholder="auto"
-                style="width:88px;font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);"
-                onchange="setCfStart(this.value)">
-            </div>
-            <div style="display:flex;align-items:center;gap:5px;">
-              <label style="font-size:11px;color:var(--muted);white-space:nowrap;">Avg from</label>
-              <select id="cf-avg-from" onchange="setCfAvgFrom(this.value)"
-                style="font-size:11px;padding:2px 6px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;outline:none;"></select>
-            </div>
-            <button id="cf-bonus-btn" class="btn btn-ghost btn-sm" onclick="toggleCfBonus()" style="font-size:11px;padding:2px 8px;">Bonus: on</button>
-            <div class="ms-wrap" id="ms-cf-excl" style="position:relative;">
-              <button class="ms-btn" id="ms-cf-excl-btn" onclick="openMs(event,'ms-cf-excl')"
-                style="font-size:11px;padding:2px 22px 2px 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--ink);font-family:'Inter',sans-serif;cursor:pointer;outline:none;height:22px;">Exclude categories</button>
-              <div class="ms-drop" id="ms-cf-excl-drop"></div>
+      <!-- Section 5: Drilldown (top categories + recent transactions) -->
+      <section class="dash-section">
+        <div class="dash-section-head">
+          <div class="dash-section-head-text">
+            <div class="dash-section-eyebrow">Drilldown</div>
+            <div class="dash-section-title">Where it's going</div>
+          </div>
+          <div class="dash-section-actions">
+            <button class="btn btn-ghost btn-sm" onclick="goNav('transactions')">View all</button>
+          </div>
+        </div>
+        <div class="dash-drilldown">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Top Categories</div></div>
+            <div class="card-body"><div class="subcat-rows" id="subcat-rows"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Recent</div></div>
+            <div class="card-body" style="padding-top:10px;">
+              <div id="recent-txns"></div>
             </div>
           </div>
         </div>
-        <div class="card-body" style="padding-bottom:16px;"><canvas id="cashflowChart"></canvas></div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div class="card-title">Recent Transactions</div>
-          <button class="btn btn-ghost btn-sm" onclick="goNav('transactions')">View all</button>
-        </div>
-        <div class="card-body" style="padding-top:10px;">
-          <div id="recent-txns"></div>
-        </div>
-      </div>
+      </section>
     </div>
 
     <!-- TRANSACTIONS -->
@@ -2967,11 +2990,12 @@ function renderDashboard() {
 
   // Recurring commitments card
   const recurring = detectRecurring();
+  const commitSection = document.getElementById('commitments-section');
   const commitCard = document.getElementById('commitments-card');
   const commitBody = document.getElementById('commitments-body');
   const commitTotal = document.getElementById('commitments-total');
   if (commitCard && commitBody && recurring.length >= 3) {
-    commitCard.style.display = '';
+    if (commitSection) commitSection.style.display = '';
     const shown = recurring.slice(0, 5);
     const hasMore = recurring.length > 5;
     commitTotal.textContent = 'Est. ' + fmt(recurring.reduce((s,r) => s + r.avgAmount, 0)) + '/mo';
