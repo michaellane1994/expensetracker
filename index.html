@@ -2194,6 +2194,8 @@ function toggleAllChartCats() {
 }
 function onChartCatCheckChange(key, checked) {
   if (checked) chartHiddenCats.delete(key); else chartHiddenCats.add(key);
+  chartCatMode = 'custom';
+  localStorage.setItem('lt_chartCatMode', 'custom');
   renderChartSection();
 }
 function selectAllChartCats()   { chartHiddenCats.clear(); renderChartSection(); }
@@ -3526,6 +3528,16 @@ function setTxnNeedsPill(kind) {
     txnCatFilter = new Set();
   }
   renderTxns();
+}
+function filterTxnsByKind(kind) {
+  txnTypeFilter  = 'expenses';
+  txnNeedsFilter = kind;
+  txnCatFilter   = new Set();
+  txnCardFilter  = new Set();
+  txnMonthFilter = selMonth ? new Set([selMonth]) : new Set();
+  const s = document.getElementById('f-search'); if (s) s.value = '';
+  const p = document.getElementById('f-person'); if (p) p.value = '';
+  goNav('transactions');
 }
 function resetTxnFilters() {
   txnTypeFilter  = '';
