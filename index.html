@@ -2136,6 +2136,8 @@ let cashflowChart;
 let fvIncomePlugin = null;
 let chartHiddenCats  = new Set();
 let chartViewMode    = 'fixed-variable'; // 'category' | 'fixed-variable' — default to Needs vs Wants
+let chartDisplayMode = localStorage.getItem('lt_chartDisplayMode') || 'chart';
+let chartCatMode     = localStorage.getItem('lt_chartCatMode')     || 'top5';
 let cfBonusVisible   = true;
 let cfStartBalance   = parseFloat(localStorage.getItem('lt_cf_start') || '0');
 const _commitExclRaw = localStorage.getItem('lt_commit_excl');
@@ -2201,10 +2203,23 @@ function toggleChartCatDropdown(e) {
 
 function setChartView(mode) {
   chartViewMode = mode;
+  chartHiddenCats = new Set();
   const catWrap = document.getElementById('chart-cat-wrap');
   if (catWrap) catWrap.style.display = mode === 'category' ? '' : 'none';
   document.getElementById('chart-view-cat')?.classList.toggle('active', mode === 'category');
   document.getElementById('chart-view-fv')?.classList.toggle('active', mode === 'fixed-variable');
+  renderChartSection();
+}
+function setChartCatMode(mode) {
+  chartCatMode = mode;
+  localStorage.setItem('lt_chartCatMode', mode);
+  renderChartSection();
+}
+function setChartDisplay(mode) {
+  chartDisplayMode = mode === 'table' ? 'table' : 'chart';
+  localStorage.setItem('lt_chartDisplayMode', chartDisplayMode);
+  document.getElementById('chart-display-graph')?.classList.toggle('active', chartDisplayMode === 'chart');
+  document.getElementById('chart-display-table')?.classList.toggle('active', chartDisplayMode === 'table');
   renderChartSection();
 }
 
@@ -2236,10 +2251,84 @@ function renderChartSection() {
   if (from) filteredMonths = filteredMonths.filter(m => m >= from);
   if (to)   filteredMonths = filteredMonths.filter(m => m <= to);
 
+  // Apply chartCatMode (all / top5 / custom) — sets chartHiddenCats unless 'custom'
+  if (chartCatMode === 'all') {
+    chartHiddenCats = new Set();
+  } else if (chartCatMode === 'top5') {
+    const totals = {};
+    CATS.forEach(c => {
+      totals[c.key] = filteredMonths.reduce((s, m) => {
+        const gross = allExpenses.filter(t => t.date.startsWith(m) && t.category === c.key).reduce((ss, t) => ss + t.amount, 0);
+        const transferred = incomes.filter(i => i.category === c.key && i.fromTxnId && i.date.startsWith(m)).reduce((ss, i) => ss + i.amount, 0);
+        return s + Math.abs(gross - transferred);
+      }, 0);
+    });
+    const top5keys = new Set(Object.entries(totals).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k]) => k));
+    chartHiddenCats = new Set(CATS.map(c => c.key).filter(k => !top5keys.has(k)));
+  }
+  // 'custom' — leave chartHiddenCats as-is (user-controlled via checkboxes)
+
+  // Sync Graph/Table toggle buttons
+  document.getElementById('chart-display-graph')?.classList.toggle('active', chartDisplayMode === 'chart');
+  document.getElementById('chart-display-table')?.classList.toggle('active', chartDisplayMode === 'table');
+
+  const canvasEl = document.getElementById('timeChart');
+  const tableEl  = document.getElementById('timeTable');
+  const chartCardBody = canvasEl?.parentElement;
+
+  // If table view, build heatmap and bail — no Chart.js rendering
+  if (chartDisplayMode === 'table') {
+    if (timeChart) { timeChart.destroy(); timeChart = null; }
+    if (canvasEl) canvasEl.style.display = 'none';
+    if (tableEl)  tableEl.style.display  = '';
+    chartCardBody?.classList.add('cb-table');
+    document.getElementById('chart-view-cat')?.classList.toggle('active', chartViewMode === 'category');
+    document.getElementById('chart-view-fv')?.classList.toggle('active', chartViewMode === 'fixed-variable');
+    const catWrap2 = document.getElementById('chart-cat-wrap');
+    if (catWrap2) catWrap2.style.display = chartViewMode === 'category' ? '' : 'none';
+    const numHidden2 = chartHiddenCats.size;
+    const lblEl2 = document.getElementById('chart-cat-label');
+    if (lblEl2) {
+      if (chartCatMode === 'all')       lblEl2.textContent = 'All Categories';
+      else if (chartCatMode === 'top5') lblEl2.textContent = 'Top 5';
+      else lblEl2.textContent = `Custom (${CATS.length - numHidden2} of ${CATS.length})`;
+    }
+    const itmEl2 = document.getElementById('chart-cat-items');
+    if (itmEl2) {
+      itmEl2.innerHTML = CATS.map(c => {
+        const checked = !chartHiddenCats.has(c.key);
+        return `<label style="display:flex;align-items:center;gap:8px;padding:5px 12px;cursor:pointer;font-size:12.5px;color:var(--ink);">
+          <input type="checkbox" ${checked ? 'checked' : ''} onchange="onChartCatCheckChange('${c.key}',this.checked)"
+            style="accent-color:${c.color};width:13px;height:13px;cursor:pointer;">
+          <span style="width:8px;height:8px;border-radius:50%;background:${c.color};flex-shrink:0;"></span>
+          ${c.label}
+        </label>`;
+      }).join('');
+    }
+    renderHeatmapTable(filteredMonths, allExpenses);
+    return;
+  }
+  if (canvasEl) canvasEl.style.display = '';
+  if (tableEl)  tableEl.style.display  = 'none';
+  chartCardBody?.classList.remove('cb-table');
+
   // Update chart category dropdown label and items
   const numChartHidden = chartHiddenCats.size;
   const chartCatLabelEl = document.getElementById('chart-cat-label');
-  if (chartCatLabelEl) chartCatLabelEl.textContent = numChartHidden === 0 ? 'All Categories' : numChartHidden === CATS.length ? 'No Categories' : `${CATS.length - numChartHidden} of ${CATS.length} shown`;
+  if (chartCatLabelEl) {
+    if (chartCatMode === 'all')       chartCatLabelEl.textContent = 'All Categories';
+    else if (chartCatMode === 'top5') chartCatLabelEl.textContent = 'Top 5';
+    else chartCatLabelEl.textContent = `Custom (${CATS.length - numChartHidden} of ${CATS.length})`;
+  }
+  ['all','top5','custom'].forEach(m => {
+    const btn = document.getElementById('ccm-' + m);
+    if (btn) {
+      const active = chartCatMode === m;
+      btn.style.background  = active ? 'var(--accent)' : 'var(--bg)';
+      btn.style.color       = active ? '#fff' : 'var(--ink)';
+      btn.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+    }
+  });
   const chartItemsEl = document.getElementById('chart-cat-items');
   if (chartItemsEl) {
     chartItemsEl.innerHTML = CATS.map(c => {
@@ -2353,13 +2442,12 @@ function renderChartSection() {
   });
 
   const chartHeight = Math.max(200, filteredMonths.length * (chartViewMode === 'fixed-variable' ? 80 : 44) + 60);
-  const canvas = document.getElementById('timeChart');
-  canvas.style.height    = chartHeight + 'px';
-  canvas.style.maxHeight = 'none';
+  canvasEl.style.height    = chartHeight + 'px';
+  canvasEl.style.maxHeight = 'none';
 
   if (timeChart) timeChart.destroy();
   if (datasets.length && filteredMonths.length) {
-    timeChart = new Chart(canvas, {
+    timeChart = new Chart(canvasEl, {
       type: 'bar',
       data: { labels: monthLabels, datasets },
       plugins: fvIncomePlugin ? [fvIncomePlugin] : [],
@@ -2433,6 +2521,187 @@ function renderChartSection() {
       }
     });
   } else if (timeChart) { timeChart.destroy(); timeChart = null; }
+}
+
+// ── HEATMAP TABLE ──
+function _heatFmt(n, compact) {
+  n = n || 0;
+  const neg = n < 0;
+  const a = Math.abs(n);
+  const sym = '$';
+  if (!compact) return (neg ? '-' : '') + sym + a.toLocaleString('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (a >= 1000) {
+    const k = a / 1000;
+    return (neg ? '-' : '') + sym + (k >= 10 ? k.toFixed(0) : k.toFixed(1)) + 'k';
+  }
+  return (neg ? '-' : '') + sym + Math.round(a).toLocaleString();
+}
+function _heatIsMobile() { return !!(window.matchMedia && window.matchMedia('(max-width:600px)').matches); }
+function _heatBudgetClass(spend, budget) {
+  if (!budget || budget <= 0) return '';
+  if (!spend  || spend  <= 0) return '';
+  const pct = spend / budget;
+  if (pct >= 1.5) return 'bud-far';
+  if (pct > 1.0)  return 'bud-over';
+  return 'bud-good';
+}
+function _heatMonthLabel(m) {
+  const [y, mo] = m.split('-');
+  return new Date(+y, mo - 1).toLocaleString('default', { month: 'short', year: '2-digit' });
+}
+function _heatGotoMonthCat(month, catKey) {
+  const s = document.getElementById('f-search'); if (s) s.value = '';
+  const p = document.getElementById('f-person'); if (p) p.value = '';
+  txnCatFilter   = new Set([catKey]);
+  txnCardFilter  = new Set();
+  txnMonthFilter = new Set([month]);
+  txnTypeFilter  = 'expenses';
+  txnNeedsFilter = '';
+  goNav('transactions');
+}
+function _heatGotoMonthKind(month, kind) {
+  const s = document.getElementById('f-search'); if (s) s.value = '';
+  const p = document.getElementById('f-person'); if (p) p.value = '';
+  txnCatFilter   = new Set();
+  txnCardFilter  = new Set();
+  txnMonthFilter = new Set([month]);
+  txnTypeFilter  = 'expenses';
+  txnNeedsFilter = kind;
+  goNav('transactions');
+}
+let _heatExpandedKinds = new Set();
+function _heatToggleKindExpand(kind, ev) {
+  if (ev) ev.stopPropagation();
+  if (_heatExpandedKinds.has(kind)) _heatExpandedKinds.delete(kind);
+  else _heatExpandedKinds.add(kind);
+  renderChartSection();
+}
+function renderHeatmapTable(filteredMonths, allExpenses) {
+  const tableEl = document.getElementById('timeTable');
+  if (!tableEl) return;
+  if (!filteredMonths.length) {
+    tableEl.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center;">No data in the selected range.</div>';
+    return;
+  }
+  const compact = _heatIsMobile();
+  const cf = (n) => _heatFmt(n, compact);
+
+  const headerHtml = `<th class="heat-cat-cell">Category</th>` + filteredMonths.map(m => `<th>${_heatMonthLabel(m)}</th>`).join('') + `<th>Total</th>`;
+
+  let bodyHtml = '';
+  let totalRow = '';
+
+  if (chartViewMode === 'fixed-variable') {
+    const needsBudget = CATS.filter(c => c.fixed).reduce((s, c) => s + (c.budget || 0), 0);
+    const wantsBudget = CATS.filter(c => !c.fixed).reduce((s, c) => s + (c.budget || 0), 0);
+    const effAmt = t => t.incomeType === 'transfer' ? -Math.abs(t.amount) : t.amount;
+    const buildKindRow = (kind, label, color, budget) => {
+      const expanded = _heatExpandedKinds.has(kind);
+      const chevron = expanded ? '▴' : '▾';
+      const cells = filteredMonths.map(m => {
+        const v = allExpenses.filter(t => t.date.startsWith(m) && (kind === 'needs' ? isNeeds(t) : !isNeeds(t)) && !t.savingsAccountId)
+                             .reduce((s, t) => s + effAmt(t), 0);
+        const cls = _heatBudgetClass(v, budget);
+        const budLine = budget ? `<div class="heat-bud">/ ${cf(budget)}</div>` : '';
+        return v !== 0
+          ? `<td class="heat-cell ${cls}${v < 0 ? ' heat-neg' : ''}" onclick="_heatToggleKindExpand('${kind}', event)" title="${label} · ${_heatMonthLabel(m)}: ${fmt(v)}${budget ? ' / ' + fmt(budget) : ''} — click for category breakdown">${cf(v)}${budLine}</td>`
+          : `<td class="heat-cell empty" onclick="_heatToggleKindExpand('${kind}', event)" style="cursor:pointer;">·</td>`;
+      });
+      const total = filteredMonths.reduce((s, m) =>
+        s + allExpenses.filter(t => t.date.startsWith(m) && (kind === 'needs' ? isNeeds(t) : !isNeeds(t)) && !t.savingsAccountId)
+                       .reduce((ss, t) => ss + effAmt(t), 0), 0);
+      const totalBudget = budget ? budget * filteredMonths.length : 0;
+      const totalBudLine = totalBudget ? `<div class="heat-bud">/ ${cf(totalBudget)}</div>` : '';
+      let row = `<tr class="heat-kind-row${expanded ? ' is-expanded' : ''}">
+        <td class="heat-cat-cell" onclick="_heatToggleKindExpand('${kind}', event)" style="cursor:pointer;" title="${label} breakdown by category"><span class="heat-dot" style="background:${color};"></span>${label} <span class="heat-chev">${chevron}</span></td>
+        ${cells.join('')}
+        <td class="heat-row-total" onclick="_heatToggleKindExpand('${kind}', event)" style="cursor:pointer;">${cf(total)}${totalBudLine}</td>
+      </tr>`;
+      if (expanded) {
+        const wantNeeds = (kind === 'needs');
+        const childCats = CATS.filter(c => !!c.fixed === wantNeeds);
+        const childData = childCats.map(c => {
+          const monthVals = filteredMonths.map(m => {
+            const gross = allExpenses.filter(t => t.date.startsWith(m) && t.category === c.key).reduce((s, t) => s + t.amount, 0);
+            const transferred = incomes.filter(i => i.category === c.key && i.fromTxnId && i.date.startsWith(m)).reduce((s, i) => s + i.amount, 0);
+            return gross - transferred;
+          });
+          const t = monthVals.reduce((s, v) => s + v, 0);
+          return { c, monthVals, t };
+        }).filter(d => d.t !== 0).sort((a, b) => b.t - a.t);
+        row += childData.map(d => {
+          const childCells = d.monthVals.map((v, i) => {
+            const cls = _heatBudgetClass(v, d.c.budget);
+            const childBudLine = d.c.budget ? `<div class="heat-bud">/ ${cf(d.c.budget)}</div>` : '';
+            return v !== 0
+              ? `<td class="heat-cell ${cls}${v < 0 ? ' heat-neg' : ''}" onclick="_heatGotoMonthCat('${filteredMonths[i]}','${d.c.key}')" title="${d.c.label} · ${_heatMonthLabel(filteredMonths[i])}: ${fmt(v)}${d.c.budget ? ' / ' + fmt(d.c.budget) : ''}">${cf(v)}${childBudLine}</td>`
+              : `<td class="heat-cell empty">·</td>`;
+          });
+          const catTotalBudget = d.c.budget ? d.c.budget * filteredMonths.length : 0;
+          const catTotalBudLine = catTotalBudget ? `<div class="heat-bud">/ ${cf(catTotalBudget)}</div>` : '';
+          return `<tr class="heat-child-row">
+            <td class="heat-cat-cell heat-child-cat"><span class="heat-dot" style="background:${d.c.color};"></span>${d.c.label}</td>
+            ${childCells.join('')}
+            <td class="heat-row-total">${cf(d.t)}${catTotalBudLine}</td>
+          </tr>`;
+        }).join('');
+      }
+      return row;
+    };
+    bodyHtml += buildKindRow('needs', 'Needs', '#b85416', needsBudget);
+    bodyHtml += buildKindRow('wants', 'Wants', '#1d4e89', wantsBudget);
+    const monthTotals = filteredMonths.map(m =>
+      allExpenses.filter(t => t.date.startsWith(m) && !t.savingsAccountId)
+                 .reduce((s, t) => s + (t.incomeType === 'transfer' ? -Math.abs(t.amount) : t.amount), 0));
+    const grand = monthTotals.reduce((s, v) => s + v, 0);
+    totalRow = `<tr class="heat-total-row">
+      <td class="heat-cat-cell">Total</td>
+      ${monthTotals.map(v => `<td>${cf(v)}</td>`).join('')}
+      <td>${cf(grand)}</td>
+    </tr>`;
+  } else {
+    const visibleCats = CATS.filter(c => !chartHiddenCats.has(c.key));
+    const rows = visibleCats.map(c => {
+      const monthVals = filteredMonths.map(m => {
+        const gross = allExpenses.filter(t => t.date.startsWith(m) && t.category === c.key)
+                                 .reduce((s, t) => s + t.amount, 0);
+        const transferred = incomes.filter(i => i.category === c.key && i.fromTxnId && i.date.startsWith(m))
+                                   .reduce((s, i) => s + i.amount, 0);
+        return gross - transferred;
+      });
+      const total = monthVals.reduce((s, v) => s + v, 0);
+      return { c, monthVals, total };
+    }).filter(r => r.total !== 0);
+    rows.sort((a, b) => Math.abs(b.total) - Math.abs(a.total));
+
+    bodyHtml = rows.map(r => {
+      const budLine = r.c.budget ? `<div class="heat-bud">/ ${cf(r.c.budget)}</div>` : '';
+      const cells = r.monthVals.map((v, i) => {
+        const cls = _heatBudgetClass(v, r.c.budget);
+        return v !== 0
+          ? `<td class="heat-cell ${cls}${v < 0 ? ' heat-neg' : ''}" onclick="_heatGotoMonthCat('${filteredMonths[i]}','${r.c.key}')" title="${r.c.label} · ${_heatMonthLabel(filteredMonths[i])}: ${fmt(v)}${r.c.budget ? ' / ' + fmt(r.c.budget) : ''}">${cf(v)}${budLine}</td>`
+          : `<td class="heat-cell empty">·</td>`;
+      });
+      const totalBudget = r.c.budget ? r.c.budget * filteredMonths.length : 0;
+      const totalBudLine = totalBudget ? `<div class="heat-bud">/ ${cf(totalBudget)}</div>` : '';
+      return `<tr>
+        <td class="heat-cat-cell"><span class="heat-dot" style="background:${r.c.color};"></span>${r.c.label}</td>
+        ${cells.join('')}
+        <td class="heat-row-total">${cf(r.total)}${totalBudLine}</td>
+      </tr>`;
+    }).join('');
+
+    const monthTotals = filteredMonths.map((m, i) => rows.reduce((s, r) => s + r.monthVals[i], 0));
+    const grand = rows.reduce((s, r) => s + r.total, 0);
+    const totalLabel = chartCatMode === 'top5' ? 'Top 5' : 'Total';
+    totalRow = `<tr class="heat-total-row">
+      <td class="heat-cat-cell">${totalLabel}</td>
+      ${monthTotals.map(v => `<td>${cf(v)}</td>`).join('')}
+      <td>${cf(grand)}</td>
+    </tr>`;
+  }
+
+  tableEl.innerHTML = `<table class="heat-table"><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}${totalRow}</tbody></table>`;
 }
 
 function setCfStart(val) {
