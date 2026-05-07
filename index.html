@@ -457,8 +457,10 @@ tbody tr:hover .row-menu-btn{opacity:1;}
   #welcome-banner > div:first-child{min-width:0!important;}
   #welcome-banner > div:last-child{width:100%;flex-direction:column;}
   #welcome-banner > div:last-child > button{width:100%;}
-  /* Period bar: allow wrap so the currency pill doesn't get pushed off-screen on phones. */
-  #dash-period-bar{flex-wrap:wrap!important;}
+  /* Period bar: allow wrap and let items flow naturally on phones. The currency pill's
+     desktop margin-left:auto eats the row width when wrapping kicks in, hiding it. */
+  #dash-period-bar{flex-wrap:wrap!important;overflow-x:auto;}
+  #dash-currency-wrap{margin-left:0!important;}
   .sidebar{transform:translateX(-100%);transition:transform .25s ease;z-index:100;}
   .sidebar.open{transform:translateX(0);}
   .sidebar-overlay.open{display:block;}
