@@ -442,6 +442,10 @@ tbody tr:hover .row-menu-btn{opacity:1;}
 .bottom-nav{display:none;}
 
 @media(max-width:768px){
+  /* Welcome banner: tighten padding and drop the 260px min-width on the first child
+     so it doesn't push past the viewport edge on narrow phones. */
+  #welcome-banner{padding:18px 16px!important;gap:12px!important;}
+  #welcome-banner > div:first-child{min-width:0!important;}
   .sidebar{transform:translateX(-100%);transition:transform .25s ease;z-index:100;}
   .sidebar.open{transform:translateX(0);}
   .sidebar-overlay.open{display:block;}
