@@ -461,6 +461,9 @@ tbody tr:hover .row-menu-btn{opacity:1;}
      desktop margin-left:auto eats the row width when wrapping kicks in, hiding it. */
   #dash-period-bar{flex-wrap:wrap!important;overflow-x:auto;}
   #dash-currency-wrap{margin-left:0!important;}
+  /* Currency menu: cap max-height to dynamic viewport height so it doesn't extend behind
+     iOS Safari's bottom URL bar. Scroll within the menu if items don't fit. */
+  #dash-currency-menu{max-height:50dvh!important;}
   .sidebar{transform:translateX(-100%);transition:transform .25s ease;z-index:100;}
   .sidebar.open{transform:translateX(0);}
   .sidebar-overlay.open{display:block;}
