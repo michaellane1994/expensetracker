@@ -1466,11 +1466,19 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         <select id="as-person"><!-- populated dynamically --></select>
       </div>
       <div class="add-field">
-        <label>Current Balance ($)</label>
-        <input type="number" id="as-balance" placeholder="0.00" min="0" step="0.01">
+        <label>Currency</label>
+        <select id="as-currency" onchange="onAcctCurrencyChange()"></select>
       </div>
       <div class="add-field">
-        <label>Savings Goal ($) (optional)</label>
+        <label><span id="as-balance-label">Current Balance</span></label>
+        <input type="number" id="as-balance" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="add-field" id="as-equiv-field" style="display:none;">
+        <label><span id="as-equiv-label">Equivalent in primary</span> (optional)</label>
+        <input type="number" id="as-balance-equiv" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="add-field">
+        <label><span id="as-goal-label">Savings Goal</span> (optional)</label>
         <input type="number" id="as-goal" placeholder="0.00" min="0" step="0.01">
       </div>
     </div>
@@ -3339,7 +3347,13 @@ function renderDashboard() {
   if (discSubEl)  discSubEl.textContent  = totalIncome > 0 ? (discTotal  / totalIncome * 100).toFixed(0) + '% of income' : 'flexible';
   const totalExpenses = total;
   const net = totalIncome - totalExpenses;
-  const totalSavings = savAccts.reduce((s, a) => s + (a.balance || 0), 0);
+  // Use balanceEquiv (manually entered in primary currency) when account currency differs;
+  // otherwise the raw balance. No FX conversion happens automatically.
+  const totalSavings = savAccts.reduce((s, a) => {
+    const ccy = a.currency && CURRENCIES[a.currency] ? a.currency : globalCurrency;
+    const v = (ccy !== globalCurrency && typeof a.balanceEquiv === 'number') ? a.balanceEquiv : (a.balance || 0);
+    return s + v;
+  }, 0);
   const bonusIncome   = monthIncomes.filter(i => i.type === 'bonus').reduce((s, i) => s + i.amount, 0);
   const regularIncome = totalIncome - bonusIncome;
   document.getElementById('dash-income').textContent     = fmt(totalIncome);
@@ -5036,20 +5050,25 @@ function renderSavings() {
       const col  = ACCT_COLORS[a.type] || '#71717a';
       const bg   = ACCT_BGS[a.type]    || '#f4f4f5';
       const pct  = a.goal ? Math.min(a.balance/a.goal*100,100).toFixed(1) : null;
+      const ccy  = a.currency && CURRENCIES[a.currency] ? a.currency : globalCurrency;
+      const ccyBadge = ccy !== globalCurrency ? `<span class="person-tag" style="background:#fef3e8;color:#9a6500;border-color:#f5c07a;">${ccy}</span>` : '';
+      const equivLine = (ccy !== globalCurrency && a.balanceEquiv) ? `<div style="font-size:10.5px;color:var(--faint);margin-top:2px;">≈ ${fmt(a.balanceEquiv, globalCurrency)}</div>` : '';
       return `<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);">
         <div style="flex:1;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap;">
             <span class="cat-badge" style="background:${bg};color:${col};">${ACCT_TYPES[a.type]||a.type}</span>
             <span style="font-weight:500;font-size:13.5px;">${esc(a.name)}</span>
             <span class="person-tag">${a.person}</span>
+            ${ccyBadge}
           </div>
           ${pct !== null ? `<div class="goal-bar-wrap" style="max-width:300px;"><div class="goal-bar" style="width:${pct}%;background:${col};"></div></div>
-          <div class="goal-pct">${pct}% of ${fmt(a.goal)} goal</div>` : ''}
+          <div class="goal-pct">${pct}% of ${fmt(a.goal, ccy)} goal</div>` : ''}
         </div>
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="text-align:right;">
-            <div style="font-family:'Playfair Display',serif;font-size:20px;color:${col};">${fmt(a.balance)}</div>
+            <div style="font-family:'Playfair Display',serif;font-size:20px;color:${col};">${fmt(a.balance, ccy)}</div>
             <div style="font-size:11px;color:var(--faint);">current balance</div>
+            ${equivLine}
           </div>
           <button class="btn btn-ghost btn-sm" onclick="editSavings('${a.id}')">Edit</button>
           <button class="del-btn always-on" onclick="deleteSavings('${a.id}')" title="Remove">✕</button>
@@ -5097,14 +5116,37 @@ function toggleCustomAcctType() {
   const isCustom = document.getElementById('as-type').value === '__custom__';
   document.getElementById('as-custom-type-field').style.display = isCustom ? '' : 'none';
 }
+function _populateAcctCurrencyDropdown() {
+  const sel = document.getElementById('as-currency');
+  if (!sel) return;
+  sel.innerHTML = Object.keys(CURRENCIES).map(code =>
+    `<option value="${code}">${code} — ${CURRENCIES[code].label}</option>`
+  ).join('');
+}
+function onAcctCurrencyChange() {
+  const code = document.getElementById('as-currency').value;
+  const balLabelEl  = document.getElementById('as-balance-label');
+  const goalLabelEl = document.getElementById('as-goal-label');
+  const equivField  = document.getElementById('as-equiv-field');
+  const equivLabel  = document.getElementById('as-equiv-label');
+  if (balLabelEl)  balLabelEl.textContent  = `Current Balance (${code})`;
+  if (goalLabelEl) goalLabelEl.textContent = `Savings Goal (${code})`;
+  if (equivField)  equivField.style.display = code === globalCurrency ? 'none' : '';
+  if (equivLabel)  equivLabel.textContent  = `Equivalent in ${globalCurrency}`;
+}
+
 function openAddSavings() {
   document.getElementById('as-name').value    = '';
   document.getElementById('as-balance').value = '';
   document.getElementById('as-goal').value    = '';
+  document.getElementById('as-balance-equiv').value = '';
   document.getElementById('as-type-custom').value = '';
   document.getElementById('as-custom-type-field').style.display = 'none';
   document.getElementById('as-type').innerHTML = savingsTypeOptions();
   populatePeopleDropdowns();
+  _populateAcctCurrencyDropdown();
+  document.getElementById('as-currency').value = globalCurrency;
+  onAcctCurrencyChange();
   document.getElementById('add-savings-modal').dataset.editId = '';
   document.getElementById('savings-modal-title').textContent = 'Add Account';
   document.getElementById('add-savings-modal').classList.add('open');
@@ -5115,6 +5157,7 @@ function editSavings(id) {
   const a = savAccts.find(x => x.id === id);
   if (!a) return;
   document.getElementById('as-type').innerHTML = savingsTypeOptions();
+  _populateAcctCurrencyDropdown();
   document.getElementById('as-type-custom').value = '';
   document.getElementById('as-custom-type-field').style.display = 'none';
   document.getElementById('as-name').value    = a.name;
@@ -5122,6 +5165,9 @@ function editSavings(id) {
   document.getElementById('as-person').value  = a.person;
   document.getElementById('as-balance').value = a.balance;
   document.getElementById('as-goal').value    = a.goal || '';
+  document.getElementById('as-currency').value = a.currency || globalCurrency;
+  document.getElementById('as-balance-equiv').value = a.balanceEquiv || '';
+  onAcctCurrencyChange();
   document.getElementById('add-savings-modal').dataset.editId = id;
   document.getElementById('savings-modal-title').textContent = 'Update Account';
   document.getElementById('add-savings-modal').classList.add('open');
@@ -5135,6 +5181,10 @@ function confirmAddSavings() {
   const person  = document.getElementById('as-person').value;
   const baseBalance = parseFloat(document.getElementById('as-balance').value) || 0;
   const goal    = parseFloat(document.getElementById('as-goal').value)    || null;
+  const currencyRaw = document.getElementById('as-currency')?.value || globalCurrency;
+  const currency    = CURRENCIES[currencyRaw] ? currencyRaw : globalCurrency;
+  const balanceEquivRaw = parseFloat(document.getElementById('as-balance-equiv').value);
+  const balanceEquiv = (currency !== globalCurrency && balanceEquivRaw > 0) ? balanceEquivRaw : null;
   if (!name) { alert('Please enter an account name.'); return; }
   if (type === '__custom__') {
     const customLabel = document.getElementById('as-type-custom').value.trim();
@@ -5148,9 +5198,9 @@ function confirmAddSavings() {
   const editId = document.getElementById('add-savings-modal').dataset.editId;
   if (editId) {
     const a = savAccts.find(x => x.id === editId);
-    if (a) { Object.assign(a, { name, type, person, baseBalance, goal }); recalcAccountBalance(editId); }
+    if (a) { Object.assign(a, { name, type, person, baseBalance, goal, currency, balanceEquiv }); recalcAccountBalance(editId); }
   } else {
-    const newAcct = { id:uid(), name, type, person, baseBalance, balance: baseBalance, goal };
+    const newAcct = { id:uid(), name, type, person, baseBalance, balance: baseBalance, goal, currency, balanceEquiv };
     savAccts.push(newAcct);
   }
   persist(); closeAddSavings(); renderSavings(); renderDashboard(); autoPush();
