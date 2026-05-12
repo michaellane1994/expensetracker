@@ -459,8 +459,10 @@ tbody tr:hover .row-menu-btn{opacity:1;}
   #welcome-banner > div:last-child > button{width:100%;}
   /* Period bar: allow wrap and let items flow naturally on phones. The currency pill's
      desktop margin-left:auto eats the row width when wrapping kicks in, hiding it. */
-  #dash-period-bar{flex-wrap:wrap!important;overflow-x:auto;}
-  #dash-currency-wrap{margin-left:0!important;}
+  /* No overflow on period-bar: it'd clip the currency dropdown that extends below.
+     flex-wrap:wrap keeps items inside the box anyway. */
+  #dash-period-bar{flex-wrap:wrap!important;overflow:visible;}
+  #dash-currency-wrap{margin-left:0!important;z-index:50;}
   /* Currency menu: cap max-height to dynamic viewport height so it doesn't extend behind
      iOS Safari's bottom URL bar. Scroll within the menu if items don't fit. */
   #dash-currency-menu{max-height:50dvh!important;}
