@@ -82,8 +82,8 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none;}
 /* ── SIDEBAR ── */
 .sidebar{width:228px;min-height:100vh;background:linear-gradient(180deg,#0a0a0d 0%,#141417 100%);position:fixed;top:0;left:0;bottom:0;z-index:100;display:flex;flex-direction:column;}
 .logo{padding:26px 22px 18px;border-bottom:1px solid rgba(255,255,255,.07);}
-.logo h1{font-family:'Playfair Display',serif;font-size:20px;color:#fff;}
-.logo span{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.6px;text-transform:uppercase;margin-top:2px;display:block;}
+.logo h1{font-family:'Playfair Display',serif;font-size:32px;color:#fff;letter-spacing:-0.02em;line-height:1;}
+.logo span{font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase;margin-top:6px;display:block;font-weight:500;}
 .nav{padding:14px 10px;flex:1;min-height:0;overflow-y:auto;scrollbar-width:thin;}
 .nav-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.25);padding:8px 12px 5px;font-weight:600;}
 .nav-item{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:var(--radius-sm);cursor:pointer;color:rgba(255,255,255,.55);transition:all .15s ease;font-size:13.5px;margin-bottom:2px;user-select:none;font-weight:450;}
@@ -162,7 +162,7 @@ input:focus-visible,select:focus-visible,textarea:focus-visible{outline:none;}
 .topbar-pills-row{display:none;position:fixed;top:58px;left:228px;right:0;background:var(--surface);border-bottom:1px solid var(--border);padding:9px 16px;gap:6px;overflow-x:auto;z-index:49;-webkit-overflow-scrolling:touch;}
 .topbar-pills-row::-webkit-scrollbar{display:none;}
 .topbar-left{display:flex;align-items:center;gap:14px;min-width:0;}
-.topbar-title{font-family:'Playfair Display',serif;font-size:17px;white-space:nowrap;}
+.topbar-title{font-family:'Playfair Display',serif;font-size:24px;letter-spacing:-0.015em;white-space:nowrap;}
 .month-pills{display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;}
 .mpill{padding:4px 11px;border-radius:100px;font-size:11.5px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif;white-space:nowrap;flex-shrink:0;}
 .mpill.active{background:var(--accent);color:#fff;border-color:var(--accent);}
@@ -493,7 +493,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
   .add-modal-grid{grid-template-columns:1fr;}
   .add-field.full{grid-column:1;}
   .modal{padding:22px 18px;}
-  .topbar-title{font-size:15px;}
+  .topbar-title{font-size:20px;}
   .txn-table table,.txn-table tbody{display:block;width:100%;}
   .txn-table thead{display:none;}
   .txn-table tfoot{display:none;}
@@ -786,7 +786,6 @@ tbody tr:hover .row-menu-btn{opacity:1;}
       <button class="help-btn" onclick="openHelpModal()" title="Help &amp; FAQ" aria-label="Help">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 4.9.5c0 1.5-2.4 2-2.4 3.5"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>
       </button>
-      <button class="btn btn-ghost btn-sm hide-mobile" onclick="exportCSV()">↓ Export</button>
       <button class="btn btn-primary btn-sm" onclick="goNav('upload')">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M12 4v16m-8-8l8-8 8 8"/></svg>
         Upload Data
@@ -1583,7 +1582,7 @@ tbody tr:hover .row-menu-btn{opacity:1;}
         <h3>Data &amp; backup</h3>
         <p>Everything lives in your browser's localStorage. If you want data to survive browser clears or sync across devices, connect Google Drive in <em>Settings → Cloud Sync</em>. The app stores a single JSON file (<code>ledger-data.json</code>) in your own Drive — nothing is sent anywhere else.</p>
         <p><strong>Load / clear sample data</strong> — the welcome banner on the Dashboard has two buttons: <em>Load sample data</em> replaces local data with a demo dataset so you can explore, and <em>Clear local data</em> wipes this device (it does not touch any Drive file you've connected). Both are also in <em>Settings → Data Tools</em>.</p>
-        <p><strong>Export</strong> — the <em>↓ Export</em> button in the topbar dumps everything as CSV.</p>
+        <p><strong>Export</strong> — connect Google Drive; the JSON file that syncs is your permanent export and can be downloaded from Drive any time.</p>
       </section>
 
       <section id="help-faq">
@@ -2053,6 +2052,9 @@ function merchantKey(m) {
 // ── NAV ──────────────────────────────────────────────────
 function goNav(name) {
   localStorage.setItem('lt_last_page', name);
+  // Reset scroll position so each page starts at the top — avoids landing
+  // mid-page when navigating in from a deep scroll on another view.
+  window.scrollTo(0, 0);
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
@@ -6688,20 +6690,6 @@ function isSkippable(merchant, amt) {
   if (Math.abs(amt) > 50000 || amt === 0) return true;
   const skip = /payment|thank you|balance|previous|opening|closing|credit limit|minimum|statement|total|interest|fee rebate|annual rate|annual interest|annual percentage/i;
   return skip.test(merchant);
-}
-
-// ── EXPORT
-function exportCSV() {
-  const rows = [['Date','Merchant','Category','Card','Amount','Note']];
-  txns.forEach(t => {
-    const c = CAT[t.category] || CAT.misc;
-    rows.push([t.date, t.merchant, c.label, t.person || '', t.amount.toFixed(2), t.note || '']);
-  });
-  const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'ledger-' + new Date().toISOString().slice(0, 10) + '.csv';
-  a.click();
 }
 
 // ── UTILS ────────────────────────────────────────────────
